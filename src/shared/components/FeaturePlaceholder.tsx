@@ -20,17 +20,17 @@ export function FeaturePlaceholder({ title, description, icon, children }: Featu
       <View style={styles.brand}>
         <Icon source="shield-outline" size={32} color={tokens.colors.primary} />
         <View style={styles.brandText}>
-          <Text variant="titleLarge" accessibilityRole="header">{t('appName')}</Text>
-          <Text variant="bodyMedium">{t('tagline')}</Text>
+          <Text variant="titleLarge" style={styles.heading} accessibilityRole="header">{t('appName')}</Text>
+          <Text variant="bodyMedium" style={styles.description}>{t('tagline')}</Text>
         </View>
       </View>
       <LanguageSwitcher />
-      <Card mode="contained" style={styles.card}>
+      <Card mode="outlined" style={styles.card}>
         <Card.Content style={styles.cardContent}>
           <Icon source={icon} size={40} color={tokens.colors.primary} />
           <Text variant="labelLarge" style={styles.status}>{t('underDevelopment')}</Text>
-          <Text variant="headlineMedium" accessibilityRole="header">{title}</Text>
-          <Text variant="bodyLarge">{description}</Text>
+          <Text variant="headlineMedium" style={styles.heading} accessibilityRole="header">{title}</Text>
+          <Text variant="bodyLarge" style={styles.description}>{description}</Text>
         </Card.Content>
       </Card>
       {children}
@@ -41,7 +41,9 @@ export function FeaturePlaceholder({ title, description, icon, children }: Featu
 const styles = StyleSheet.create({
   brand: { flexDirection: 'row', alignItems: 'center', gap: tokens.spacing.md },
   brandText: { flex: 1, gap: tokens.spacing.xs },
-  card: { backgroundColor: tokens.colors.surface },
+  card: { borderColor: tokens.colors.border },
   cardContent: { gap: tokens.spacing.md },
   status: { color: tokens.colors.primary },
+  heading: { color: tokens.colors.primaryDark },
+  description: { color: tokens.colors.textSecondary },
 });

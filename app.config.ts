@@ -1,5 +1,8 @@
 import type { ExpoConfig } from 'expo/config';
 
+// Expo compiles only this config file. Node 24 loads shared TS via an explicit extension.
+const { tokens }: typeof import('./src/shared/theme/tokens') = require('./src/shared/theme/tokens.ts');
+
 const config: ExpoConfig = {
   name: 'SafeRoute AI',
   slug: 'saferoute-ai',
@@ -10,7 +13,7 @@ const config: ExpoConfig = {
   ios: { supportsTablet: true },
   android: {
     adaptiveIcon: {
-      backgroundColor: '#E6F4FE',
+      backgroundColor: tokens.colors.screenBackground,
       foregroundImage: './assets/android-icon-foreground.png',
       backgroundImage: './assets/android-icon-background.png',
       monochromeImage: './assets/android-icon-monochrome.png',

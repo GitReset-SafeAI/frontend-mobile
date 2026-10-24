@@ -10,11 +10,12 @@ const navigationTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: tokens.colors.primary,
-    background: tokens.colors.background,
+    primary: tokens.colors.primaryDark,
+    background: tokens.colors.screenBackground,
     card: tokens.colors.surface,
-    text: tokens.colors.text,
-    border: tokens.colors.outline,
+    text: tokens.colors.textPrimary,
+    border: tokens.colors.border,
+    notification: tokens.colors.status.error,
   },
 };
 
