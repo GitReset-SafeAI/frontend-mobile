@@ -4,7 +4,7 @@ import { Button, Card, Chip, Text } from 'react-native-paper';
 
 import type { Hotspot } from '../../../services/contracts';
 import { tokens } from '../../../shared/theme/tokens';
-import { issueTypeDisplay } from '../constants/issueTypes';
+import { hotspotIssues } from '../constants/issueTypes';
 
 interface HotspotDetailCardProps {
   hotspot: Hotspot;
@@ -20,14 +20,11 @@ export function HotspotDetailCard({ hotspot, windowDays, onDismiss }: HotspotDet
       <Card.Title title={t('map.areaTitle')} titleNumberOfLines={2} />
       <Card.Content style={styles.content}>
         <View style={styles.issues}>
-          {hotspot.topCategories.map((category) => {
-            const display = issueTypeDisplay(category);
-            return (
-              <Chip key={category} compact icon={display.icon} style={styles.issueChip}>
-                {t(display.labelKey)}
-              </Chip>
-            );
-          })}
+          {hotspotIssues(hotspot).map((issue) => (
+            <Chip key={issue.key} compact icon={issue.icon} style={styles.issueChip}>
+              {t(issue.labelKey)}
+            </Chip>
+          ))}
         </View>
 
         <Text variant="bodyLarge">

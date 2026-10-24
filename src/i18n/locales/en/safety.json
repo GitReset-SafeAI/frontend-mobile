@@ -49,14 +49,26 @@
     "moderate": "Based on a moderate number of reports"
   },
   "issues": {
-    "unwanted_touching": "Unwanted touching",
-    "verbal_harassment": "Verbal harassment",
-    "stalking": "Stalking",
-    "following": "Someone followed",
-    "threatening_behaviour": "Threatening behaviour",
-    "low_light": "Poor lighting",
-    "isolated_area": "Isolated stretch",
-    "other": "Other reported issue"
+    "incident": {
+      "UNWANTED_FOLLOWING": "Someone followed",
+      "VERBAL_SEXUAL_HARASSMENT": "Verbal sexual harassment",
+      "UNWANTED_PHYSICAL_CONTACT": "Unwanted physical contact",
+      "THREATENING_BEHAVIOUR": "Threatening behaviour",
+      "UNCOMFORTABLE_STARING": "Uncomfortable staring",
+      "OTHER": "Other reported incident",
+      "UNCLEAR": "Unclear from the report",
+      "UNKNOWN": "Other reported incident"
+    },
+    "concern": {
+      "POOR_STREET_LIGHTING": "Poor street lighting",
+      "ISOLATED_OR_DESERTED_ROAD": "Isolated or deserted road",
+      "UNSAFE_BUS_STOP": "Bus stop felt unsafe",
+      "FEELING_UNSAFE_WITHOUT_CONFIRMED_INCIDENT": "Felt unsafe, no incident confirmed",
+      "PREVIOUS_SAFETY_CONCERNS_AT_LOCATION": "Earlier concerns at this place",
+      "OTHER": "Other safety concern",
+      "UNCLEAR": "Unclear from the report",
+      "UNKNOWN": "Other safety concern"
+    }
   },
   "routes": {
     "title": "Compare walking routes",

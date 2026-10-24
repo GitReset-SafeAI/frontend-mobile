@@ -4,7 +4,7 @@ import MapView, { Circle, Marker, Polyline } from 'react-native-maps';
 import { mapsConfig } from '../../../config/maps';
 import type { Coordinate, Hotspot, Route } from '../../../services/contracts';
 import { tokens } from '../../../shared/theme/tokens';
-import { hotspotFill, issueTypeDisplay } from '../constants/issueTypes';
+import { hotspotFill, hotspotMarkerColor } from '../constants/issueTypes';
 
 interface SafetyMapCanvasProps {
   hotspots: Hotspot[];
@@ -57,7 +57,7 @@ export function SafetyMapCanvas({
             key={`marker-${hotspot.id}`}
             coordinate={hotspot.center}
             title={hotspotLabel(hotspot)}
-            pinColor={issueTypeDisplay(hotspot.topCategories[0] ?? '').color}
+            pinColor={hotspotMarkerColor(hotspot)}
             onPress={() => onHotspotPress(hotspot)}
           />
         ))}

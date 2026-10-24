@@ -4,7 +4,7 @@ import { Card, Chip, Icon, Text, TouchableRipple } from 'react-native-paper';
 
 import type { Route, RouteComparisonResult } from '../../../services/contracts';
 import { tokens } from '../../../shared/theme/tokens';
-import { issueTypeDisplay } from '../constants/issueTypes';
+import { routeIssues } from '../constants/issueTypes';
 
 interface RouteComparisonCardProps {
   comparison: RouteComparisonResult;
@@ -67,6 +67,7 @@ interface RouteRowProps {
 function RouteRow({ route, selected, recommended, onPress }: RouteRowProps) {
   const { t } = useTranslation('safety');
   const label = t(`routes.role.${route.role}`);
+  const issues = routeIssues(route);
 
   return (
     <TouchableRipple
@@ -94,16 +95,13 @@ function RouteRow({ route, selected, recommended, onPress }: RouteRowProps) {
           {t('routes.hotspotsPassed', { count: route.hotspotsPassed })}
         </Text>
 
-        {route.issueCategories.length > 0 ? (
+        {issues.length > 0 ? (
           <View style={styles.issues}>
-            {route.issueCategories.map((category) => {
-              const display = issueTypeDisplay(category);
-              return (
-                <Chip key={category} compact icon={display.icon} style={styles.issueChip}>
-                  {t(display.labelKey)}
-                </Chip>
-              );
-            })}
+            {issues.map((issue) => (
+              <Chip key={issue.key} compact icon={issue.icon} style={styles.issueChip}>
+                {t(issue.labelKey)}
+              </Chip>
+            ))}
           </View>
         ) : (
           <Text variant="bodyMedium" style={styles.muted}>{t('routes.noReportedIssues')}</Text>
