@@ -2,5 +2,139 @@
   "title": "Share an incident",
   "description": "Text reports, voice input, and transcript review are being developed. This preview does not collect or submit incidents.",
   "next": "Your words, your review",
-  "nextDescription": "You will be able to review and edit a transcript before choosing to submit a report."
+  "nextDescription": "You will be able to review and edit a transcript before choosing to submit a report.",
+  "stepOf": "Step {{current}} of {{total}}",
+  "headerTitle": "Report an incident",
+  "describe": {
+    "title": "What happened?",
+    "subtitle": "Share what you experienced or saw. You can write in English, සිංහල, தமிழ், or a mix.",
+    "a11yLabel": "Describe the incident",
+    "placeholder": "Describe the incident in your own words",
+    "counter": "{{count}} / {{max}}",
+    "error": "Please write at least {{min}} characters so we can understand what happened.",
+    "voice": "Speak instead",
+    "startOver": "Start over",
+    "transcriptTitle": "Check your transcript",
+    "transcriptBody": "Voice transcripts can contain mistakes. Read and edit the text above before you continue.",
+    "transcriptConfirm": "The transcript looks right",
+    "transcriptNeeded": "Please confirm the transcript to continue."
+  },
+  "voice": {
+    "title": "Voice input",
+    "demoNote": "Demo: no audio is recorded. A sample transcript is used until the speech service is connected.",
+    "idle": "Tap start, then describe what happened.",
+    "recording": "Listening… {{time}}",
+    "transcribing": "Turning your voice into text…",
+    "start": "Start",
+    "stop": "Stop and transcribe",
+    "error": "We couldn't transcribe that. Try again, or type instead.",
+    "retry": "Try again"
+  },
+  "when": {
+    "title": "When and where?",
+    "subtitle": "Approximate is fine, and both are optional.",
+    "whenLabel": "When did it happen?",
+    "options": {
+      "just_now": "Just now",
+      "today": "Earlier today",
+      "yesterday": "Yesterday",
+      "this_week": "This week",
+      "earlier": "Earlier / not sure"
+    },
+    "whereLabel": "Where did it happen?",
+    "whereHint": "Only an approximate area is used, never your exact spot.",
+    "useCurrent": "Use my current location",
+    "locating": "Finding your approximate area…",
+    "pickDistrict": "Choose a district",
+    "selectedCurrent": "Approximate area near you",
+    "selectedDistrict": "{{district}} district",
+    "notShared": "Location not shared",
+    "remove": "Remove",
+    "denied": "Location permission is off. You can choose a district instead.",
+    "unavailable": "We couldn't get your location. You can choose a district instead.",
+    "districtTitle": "Choose a district"
+  },
+  "details": {
+    "title": "Anything else?",
+    "subtitle": "Optional. Skip anything you're not sure about.",
+    "lighting": "Lighting",
+    "lightingOptions": {
+      "well_lit": "Well lit",
+      "dim": "Dim",
+      "dark": "Dark",
+      "unsure": "Not sure"
+    },
+    "crowd": "How busy was it?",
+    "crowdOptions": {
+      "empty": "Almost empty",
+      "few": "A few people",
+      "crowded": "Crowded",
+      "unsure": "Not sure"
+    },
+    "others": "Were other people nearby?",
+    "othersOptions": {
+      "yes": "Yes",
+      "no": "No",
+      "unsure": "Not sure"
+    }
+  },
+  "review": {
+    "title": "Review and submit",
+    "subtitle": "Check your report before you send it.",
+    "what": "What happened",
+    "whenWhere": "When and where",
+    "extra": "Extra details",
+    "notProvided": "Not provided",
+    "privacy": "Your description stays private. The public map only shows an approximate area and report counts.",
+    "aiNote": "AI will suggest a category and seriousness. These are estimates and can be wrong.",
+    "submit": "Submit report",
+    "submitting": "Analysing your report…",
+    "errorTitle": "We couldn't submit your report",
+    "errorBody": "Your report is still on this device. Please try again.",
+    "invalid": "Your description needs a little more detail before it can be submitted."
+  },
+  "submitted": {
+    "title": "Report received",
+    "subtitle": "Thank you for sharing this.",
+    "yourWords": "Your words",
+    "next": "Before a report appears on the map it may be checked for duplicates or unusual patterns. That is not a judgement about you.",
+    "viewMap": "View safety map",
+    "empty": "There is no report to show."
+  },
+  "districts": {
+    "colombo": "Colombo",
+    "gampaha": "Gampaha",
+    "kalutara": "Kalutara",
+    "kandy": "Kandy",
+    "matale": "Matale",
+    "nuwara_eliya": "Nuwara Eliya",
+    "galle": "Galle",
+    "matara": "Matara",
+    "hambantota": "Hambantota",
+    "jaffna": "Jaffna",
+    "kilinochchi": "Kilinochchi",
+    "mannar": "Mannar",
+    "vavuniya": "Vavuniya",
+    "mullaitivu": "Mullaitivu",
+    "batticaloa": "Batticaloa",
+    "ampara": "Ampara",
+    "trincomalee": "Trincomalee",
+    "kurunegala": "Kurunegala",
+    "puttalam": "Puttalam",
+    "anuradhapura": "Anuradhapura",
+    "polonnaruwa": "Polonnaruwa",
+    "badulla": "Badulla",
+    "monaragala": "Monaragala",
+    "ratnapura": "Ratnapura",
+    "kegalle": "Kegalle"
+  },
+  "stops": {
+    "describe": "Describe",
+    "when": "When & where",
+    "details": "Details",
+    "review": "Review"
+  },
+  "aside": {
+    "title": "Good to know"
+  }
 }

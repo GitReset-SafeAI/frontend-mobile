@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { SegmentedButtons, Text } from 'react-native-paper';
 
+import { isAppLanguage, languageNames, supportedLanguages } from '../../i18n';
 import { tokens } from '../theme/tokens';
 
 export function LanguageSwitcher() {
@@ -10,12 +11,14 @@ export function LanguageSwitcher() {
     <View style={styles.container}>
       <Text variant="labelLarge">{t('language')}</Text>
       <SegmentedButtons
-        value={i18n.resolvedLanguage === 'si' ? 'si' : 'en'}
+        value={isAppLanguage(i18n.resolvedLanguage) ? i18n.resolvedLanguage : 'en'}
         onValueChange={(language) => { void i18n.changeLanguage(language); }}
-        buttons={[
-          { value: 'en', label: 'English', accessibilityLabel: 'English', style: styles.button },
-          { value: 'si', label: 'සිංහල', accessibilityLabel: 'සිංහල', style: styles.button },
-        ]}
+        buttons={supportedLanguages.map((language) => ({
+          value: language,
+          label: languageNames[language],
+          accessibilityLabel: languageNames[language],
+          style: styles.button,
+        }))}
       />
     </View>
   );

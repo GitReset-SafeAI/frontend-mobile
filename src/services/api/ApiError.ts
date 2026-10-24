@@ -5,6 +5,8 @@ export type ApiErrorKind =
   | 'validation'
   | 'unauthorized'
   | 'forbidden'
+  | 'conflict'
+  | 'limit'
   | 'not-found'
   | 'server'
   | 'http'

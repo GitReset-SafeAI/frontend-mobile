@@ -1,4 +1,4 @@
-# SafeRoute AI mobile
+# SafeStep mobile
 
 An Expo + React Native + TypeScript foundation for a Sri Lankan personal-safety app. This is the **frontend repository**. FastAPI, Supabase integration, authentication, AI orchestration, hotspot calculation, and routing belong to the separate backend application.
 
@@ -17,12 +17,25 @@ The app starts in **mock mode without an environment file**. Optionally copy `.e
 
 ## What works
 
-- Typed React Navigation native stack containing Report and Safety Map tabs.
-- Paper theme, safe areas, scrollable placeholder screens, and English/Sinhala interface switching.
-- Report screen demonstrates a TanStack Query request through the selected typed mock service.
+- **Login / sign up** is the first screen when nobody is signed in (or continue without an account); either way you land on Home. See *Demo sign-in* below.
+- Home with a single SOS button (5-second cancellable countdown, then dials your **primary emergency contact**; never the police) and Home / Report incident / Safety Map / Account tabs, with an SOS pill in the headers.
+- **Account tab:** up to 5 emergency contacts (name, Sri Lankan phone number, optional relationship), make-primary, edit, remove, call, and log out. Without a contact, SOS says so and never dials anything else.
+- Report flow: describe (text or demo voice with transcript confirmation) → optional when/where → optional details → review → AI-estimate result (mock).
+- The Safety Map is unchanged apart from its colours, which follow the SafeStep palette (see *Map colours* in `docs/architecture.md`).
+- Typed React Navigation, Paper theme, safe areas, and English / සිංහල / தமிழ் interface switching (the map's own strings included; `src/test/localeParity.test.ts` fails if a string is added without all three languages).
 - Fetch client with timeouts, cancellation, response validation, and normalized errors, ready for future endpoint adapters.
 
-The screens are scaffolding. They do not collect reports, record audio, request location, render a map, authenticate users, or connect to FastAPI/Supabase. The interface language switch does not determine an incident's input language. Sinhala strings are a starter translation set and require fluent-speaker/device review. System fonts are used; no custom fonts have been bundled.
+Voice input records no audio and AI results are keyword-based mocks; both are labelled as demo in the UI. Sign-in is a demo (below), not real authentication, and nothing connects to FastAPI/Supabase for reports, accounts or contacts. The interface language switch does not determine an incident's input language. Sinhala strings are a starter translation set and require fluent-speaker/device review. System fonts are used; no custom fonts have been bundled.
+
+## Demo sign-in
+
+Sign-in is a **demo** behind typed service contracts (`AuthService`, `ContactService`), implemented in `src/services/mocks/accounts.ts`:
+
+- On the login screen tap **Use demo account** (or log in as `demo@safestep.lk` with any password). It comes with two sample contacts whose numbers are placeholders: add your own number to test dialling.
+- Or **Create account** with any name, email and an 8+ character password. No password is read, checked or stored.
+- Accounts and contacts are kept in the device's secure storage (`expo-secure-store`: Keychain / Keystore), because phone numbers are personal data even in a demo. They survive restarting the app and disappear when it is deleted. Do not enter real people's numbers.
+- With `EXPO_PUBLIC_DATA_MODE=api` every auth, contacts and report call fails explicitly until the backend contract is agreed. The safety map's own API calls are unaffected.
+- The iOS simulator cannot place calls, so SOS shows "Call started" without ringing anyone. A real phone will dial: cancel the countdown if you do not mean to call.
 
 ## Checks
 

@@ -1,4 +1,6 @@
 import type { AppServices, HotspotsRequest, HotspotsResult } from '../contracts';
+import { mockAuth, mockContacts } from './accounts';
+import { analyseSyntheticReport, sampleTranscript } from './fixtures/analysis';
 import { searchDemoPlaces } from './fixtures/places';
 import { demoHotspots } from './fixtures/safetyMap';
 import { demoStatus } from './fixtures/status';
@@ -21,7 +23,26 @@ function matchesTimePeriod(
   return timePeriod === 'all' || hotspot.peakTimePeriod === null || hotspot.peakTimePeriod === timePeriod;
 }
 
+// Simulated latency makes loading and processing states visible in demos. Tests skip it.
+const mockLatencyMs = process.env.NODE_ENV === 'test' ? 0 : 1200;
+const wait = (ms: number) => new Promise<void>((resolve) => { setTimeout(resolve, ms); });
+
 export const mockServices: AppServices = {
+  auth: mockAuth,
+  contacts: mockContacts,
+  reports: {
+    async submitReport(submission) {
+      await wait(mockLatencyMs);
+      return {
+        reportId: `mock-${Date.now().toString(36)}`,
+        analysis: analyseSyntheticReport(submission),
+      };
+    },
+    async transcribeVoice() {
+      await wait(mockLatencyMs);
+      return { text: sampleTranscript };
+    },
+  },
   status: { async getStatus() { return { ...demoStatus }; } },
   places: {
     async searchPlaces({ query, limit = 6 }) {

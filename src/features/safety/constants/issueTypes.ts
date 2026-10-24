@@ -17,34 +17,34 @@ export interface IssueDisplay {
 type DisplayMeta = Omit<IssueDisplay, 'key' | 'labelKey'>;
 
 const incidentCategories: Record<string, DisplayMeta> = {
-  UNWANTED_FOLLOWING: { icon: 'shoe-print', color: tokens.colors.status.error },
-  VERBAL_SEXUAL_HARASSMENT: { icon: 'comment-alert-outline', color: tokens.colors.status.error },
-  UNWANTED_PHYSICAL_CONTACT: { icon: 'hand-back-right-outline', color: tokens.colors.status.error },
-  THREATENING_BEHAVIOUR: { icon: 'alert-outline', color: tokens.colors.status.error },
-  UNCOMFORTABLE_STARING: { icon: 'eye-outline', color: tokens.colors.status.warning },
-  OTHER: { icon: 'map-marker-alert-outline', color: tokens.colors.status.warning },
-  UNCLEAR: { icon: 'help-circle-outline', color: tokens.colors.status.unknown },
+  UNWANTED_FOLLOWING: { icon: 'shoe-print', color: tokens.colors.map.issueConduct },
+  VERBAL_SEXUAL_HARASSMENT: { icon: 'comment-alert-outline', color: tokens.colors.map.issueConduct },
+  UNWANTED_PHYSICAL_CONTACT: { icon: 'hand-back-right-outline', color: tokens.colors.map.issueConduct },
+  THREATENING_BEHAVIOUR: { icon: 'alert-outline', color: tokens.colors.map.issueConduct },
+  UNCOMFORTABLE_STARING: { icon: 'eye-outline', color: tokens.colors.map.issueBehaviour },
+  OTHER: { icon: 'map-marker-alert-outline', color: tokens.colors.map.issueBehaviour },
+  UNCLEAR: { icon: 'help-circle-outline', color: tokens.colors.map.issueUnknown },
 };
 
 const safetyConcerns: Record<string, DisplayMeta> = {
-  POOR_STREET_LIGHTING: { icon: 'lightbulb-off-outline', color: tokens.colors.status.info },
-  ISOLATED_OR_DESERTED_ROAD: { icon: 'road-variant', color: tokens.colors.status.info },
-  UNSAFE_BUS_STOP: { icon: 'bus-stop', color: tokens.colors.status.info },
+  POOR_STREET_LIGHTING: { icon: 'lightbulb-off-outline', color: tokens.colors.map.issueConcern },
+  ISOLATED_OR_DESERTED_ROAD: { icon: 'road-variant', color: tokens.colors.map.issueConcern },
+  UNSAFE_BUS_STOP: { icon: 'bus-stop', color: tokens.colors.map.issueConcern },
   FEELING_UNSAFE_WITHOUT_CONFIRMED_INCIDENT: {
     icon: 'account-alert-outline',
-    color: tokens.colors.status.unknown,
+    color: tokens.colors.map.issueUnknown,
   },
   PREVIOUS_SAFETY_CONCERNS_AT_LOCATION: {
     icon: 'history',
-    color: tokens.colors.status.unknown,
+    color: tokens.colors.map.issueUnknown,
   },
-  OTHER: { icon: 'information-outline', color: tokens.colors.status.unknown },
-  UNCLEAR: { icon: 'help-circle-outline', color: tokens.colors.status.unknown },
+  OTHER: { icon: 'information-outline', color: tokens.colors.map.issueUnknown },
+  UNCLEAR: { icon: 'help-circle-outline', color: tokens.colors.map.issueUnknown },
 };
 
 const unknownMeta: DisplayMeta = {
   icon: 'map-marker-alert-outline',
-  color: tokens.colors.status.unknown,
+  color: tokens.colors.map.issueUnknown,
 };
 
 function toDisplay(
@@ -90,11 +90,11 @@ export function hotspotFill(intensity: number) {
   const alpha = Math.round(40 + Math.min(1, Math.max(0, intensity)) * 70)
     .toString(16)
     .padStart(2, '0');
-  return `${tokens.colors.status.error}${alpha}`;
+  return `${tokens.colors.map.area}${alpha}`;
 }
 
 export function hotspotMarkerColor(hotspot: Hotspot) {
-  return hotspotIssues(hotspot)[0]?.color ?? tokens.colors.status.unknown;
+  return hotspotIssues(hotspot)[0]?.color ?? tokens.colors.map.issueUnknown;
 }
 
 // Reported as a band, not a percentage: a mean of AI confidence scores does not

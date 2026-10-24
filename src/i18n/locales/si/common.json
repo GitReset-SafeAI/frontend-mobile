@@ -1,5 +1,5 @@
 {
-  "appName": "SafeRoute AI",
+  "appName": "SafeStep",
   "tagline": "ඔබේ ආරක්ෂාව වෙනුවෙන්",
   "reportTab": "වාර්තා කරන්න",
   "safetyTab": "ආරක්ෂක සිතියම",
@@ -13,5 +13,25 @@
   "demoMode": "ආදර්ශ මාදිලිය · නියැදි දත්ත",
   "demoAvailable": "ආදර්ශ සේවාව භාවිත කළ හැකිය. කිසිදු වාර්තාවක් ඉදිරිපත් කර නැත.",
   "apiUnavailable": "API මාදිලිය තෝරා ඇත. පසුපස සේවා තවම සම්බන්ධ කර නැත.",
-  "serviceStatus": "සංවර්ධන තත්ත්වය"
+  "serviceStatus": "සංවර්ධන තත්ත්වය",
+  "homeTab": "මුල් පිටුව",
+  "homeTabAccessibility": "මුල් පිටුව ටැබය",
+  "reportTabNew": "වාර්තා කරන්න",
+  "reportTabNewAccessibility": "සිදුවීම වාර්තා කිරීමේ ටැබය",
+  "safetyTabNew": "ආරක්ෂක සිතියම",
+  "safetyTabNewAccessibility": "ආරක්ෂක සිතියම් ටැබය",
+  "sosHeaderLabel": "SOS හදිසි උදව්",
+  "switchToSinhala": "සිංහල",
+  "switchToSinhalaA11y": "භාෂාව සිංහලට මාරු කරන්න",
+  "switchToEnglish": "English",
+  "switchToEnglishA11y": "භාෂාව ඉංග්‍රීසියට මාරු කරන්න",
+  "back": "ආපසු",
+  "next": "ඊළඟ",
+  "skip": "මඟ හරින්න",
+  "done": "අවසන්",
+  "cancel": "අවලංගු කරන්න",
+  "close": "වසන්න",
+  "edit": "සංස්කරණය",
+  "optional": "අමතර",
+  "sampleData": "නියැදි දත්ත · ආදර්ශ මාදිලිය"
 }
