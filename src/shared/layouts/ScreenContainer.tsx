@@ -15,6 +15,6 @@ export function ScreenContainer({ children }: PropsWithChildren) {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: tokens.colors.background },
+  safeArea: { flex: 1, backgroundColor: tokens.colors.screenBackground },
   content: { flexGrow: 1, padding: tokens.spacing.lg, gap: tokens.spacing.lg },
 });

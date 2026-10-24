@@ -8,6 +8,10 @@ The typed root native stack contains a two-tab navigator. Future feature screens
 
 `shared/theme/tokens.ts` defines colors, semantic status colors, spacing, typography, and radii; `theme.ts` maps them into Paper. A shared scrolling container and placeholder compose the initial screens. Paper handles controls; local StyleSheets handle layout. Semantic colors must always be accompanied by text or icons. Success styling must not imply a safe route.
 
+The light lavender/purple palette keeps screen backgrounds pale and cards/inputs white. Primary controls use `primary` with `textOnDark`; headings and selected navigation use `primaryDark`. Tinted selections use `textPrimary` because purple and muted text on `lightTint` do not meet normal-text contrast. Paper's `onSurfaceVariant` uses `textSecondary` for accessible placeholders, while `inputHint` is decoration only. Functional outlines use `textSecondary`; decorative card borders use `border`. Disabled controls have a desaturated fill with readable dark labels. Gradient and circle colors are reserved for future decoration; `deviceBezel` is for mockups only.
+
+Calculated contrast ratios: primary button labels 5.06:1, deep-purple headings on the screen background 6.14:1, secondary text on white 5.57:1 (5.25:1 on the screen background), and dark labels on tinted selections 9.64:1. These exceed the [4.5:1 normal-text contrast criterion](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html). `inputHint` on white is only 1.98:1; never use it for required text. Do not put white text on decorative/gradient purples without checking the actual background. Contrast calculations do not replace device checks for focus, font rendering, or font scaling.
+
 ## Data path
 
 ```text

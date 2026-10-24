@@ -14,9 +14,9 @@ export function MainTabs() {
   return (
     <Tab.Navigator screenOptions={({ route }) => ({
       headerShown: false,
-      tabBarActiveTintColor: tokens.colors.primary,
-      tabBarInactiveTintColor: tokens.colors.textMuted,
-      tabBarStyle: { backgroundColor: tokens.colors.surface },
+      tabBarActiveTintColor: tokens.colors.primaryDark,
+      tabBarInactiveTintColor: tokens.colors.textSecondary,
+      tabBarStyle: { backgroundColor: tokens.colors.surface, borderTopColor: tokens.colors.border },
       tabBarIcon: ({ color, size }) => (
         <Icon source={route.name === 'Report' ? 'clipboard-text-outline' : 'map-outline'} color={color} size={size} />
       ),
