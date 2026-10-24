@@ -20,7 +20,6 @@
     "disclaimer": "These areas show where incidents were reported, not where harassment actually occurs. Reporting is uneven, so busy areas may show more reports.",
     "loading": "Loading reported areas",
     "loadFailed": "Reported areas could not be loaded. Please try again.",
-    "close": "Close",
     "confidence": {
       "high": "The AI read these reports clearly",
       "moderate": "The AI was moderately sure of these reports",
@@ -43,7 +42,8 @@
     "myLocation": "My location",
     "hint": "Tap a marked area on the map to see what was reported there.",
     "walking": "Walk",
-    "driving": "Drive"
+    "driving": "Drive",
+    "subtitle": "Where are you going?"
   },
   "evidence": {
     "insufficient": "Not enough reports to show a pattern",

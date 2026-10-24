@@ -11,6 +11,7 @@ import type {
   TravelMode,
 } from '../../../services/contracts';
 import { LanguageSwitcher } from '../../../shared/components/LanguageSwitcher';
+import { SectionCard } from '../../../shared/components/SectionCard';
 import { useCurrentLocation } from '../../../shared/hooks/useCurrentLocation';
 import { ScreenContainer } from '../../../shared/layouts/ScreenContainer';
 import { tokens } from '../../../shared/theme/tokens';
@@ -178,7 +179,6 @@ export function SafetyMapScreen() {
         <HotspotDetailCard
           hotspot={selectedHotspot}
           windowDays={hotspotsQuery.data?.windowDays ?? 30}
-          onDismiss={() => setSelectedHotspot(null)}
         />
       ) : null}
 
@@ -202,12 +202,11 @@ export function SafetyMapScreen() {
 
       {hotspotsQuery.data ? <MapEvidenceNotice result={hotspotsQuery.data} /> : null}
 
-      <Card mode="outlined" style={styles.card}>
-        <Card.Title title={t('estimateTitle')} titleNumberOfLines={3} />
-        <Card.Content>
-          <Text variant="bodyLarge">{t('estimateDescription')}</Text>
-        </Card.Content>
-      </Card>
+      {/* Folded by default; the heading carries the caveat on its own. The
+          route card states its own limits where a route is actually chosen. */}
+      <SectionCard title={t('estimateTitle')} icon="shield-alert-outline" defaultOpen={false}>
+        <Text variant="bodyLarge">{t('estimateDescription')}</Text>
+      </SectionCard>
     </ScreenContainer>
   );
 }

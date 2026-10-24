@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Card, Chip, Icon, Text, TouchableRipple } from 'react-native-paper';
+import { Chip, Icon, Text, TouchableRipple } from 'react-native-paper';
 
 import type { Route, RouteComparisonResult } from '../../../services/contracts';
+import { SectionCard } from '../../../shared/components/SectionCard';
 import { tokens } from '../../../shared/theme/tokens';
 import { routeIssues } from '../constants/issueTypes';
 
@@ -24,9 +25,12 @@ export function RouteComparisonCard({
   const { t } = useTranslation('safety');
 
   return (
-    <Card mode="outlined" style={styles.card}>
-      <Card.Title title={t('routes.title')} titleNumberOfLines={2} />
-      <Card.Content style={styles.content}>
+    <SectionCard
+      title={t('routes.title')}
+      subtitle={t(`planner.${comparison.travelMode}`)}
+      icon={comparison.travelMode === 'driving' ? 'car' : 'walk'}
+      testID="routes-card"
+    >
         {comparison.recommendedRouteId === null ? (
           <View style={styles.notice}>
             <Icon source="information-outline" size={20} color={tokens.colors.status.info} />
@@ -75,8 +79,7 @@ export function RouteComparisonCard({
         <Text variant="bodyMedium" style={styles.disclaimer}>
           {t('routes.disclaimer')}
         </Text>
-      </Card.Content>
-    </Card>
+    </SectionCard>
   );
 }
 
@@ -139,8 +142,6 @@ function RouteRow({ route, selected, recommended, lowestExposure, onPress }: Rou
 }
 
 const styles = StyleSheet.create({
-  card: { borderColor: tokens.colors.border },
-  content: { gap: tokens.spacing.md },
   route: {
     borderWidth: 1,
     borderColor: tokens.colors.border,
