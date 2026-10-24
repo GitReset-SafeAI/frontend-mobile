@@ -1,0 +1,106 @@
+{
+  "title": "Explore your journey",
+  "description": "The incident map and walking-route comparisons are being developed. This preview does not access your location.",
+  "estimateTitle": "Safety information has limits",
+  "estimateDescription": "AI classifications, hotspots, and route indicators will be estimates. No route can be guaranteed safe.",
+  "map": {
+    "title": "Reported incident areas",
+    "areaTitle": "About this area",
+    "areaApproximate": "This area is approximate. It never shows the exact place an incident was reported.",
+    "legendTitle": "What these areas mean",
+    "legendDescription": "Each shaded area covers a place where several incidents were reported. Areas are approximate and never show an exact incident location.",
+    "reportCount_one": "{{count}} report in the last {{days}} days",
+    "reportCount_other": "{{count}} reports in the last {{days}} days",
+    "recency": "Most recent report {{days}} days ago",
+    "peakTime": "Most reports: {{bucket}}",
+    "suppressed_one": "{{count}} area is not shown because too few reports were available.",
+    "suppressed_other": "{{count}} areas are not shown because too few reports were available.",
+    "emptyTitle": "Few reports in this area",
+    "emptyDescription": "This does not mean the area is safe. It means there is not enough reported information to show a pattern.",
+    "disclaimer": "These areas show where incidents were reported, not where harassment actually occurs. Reporting is uneven, so busy areas may show more reports.",
+    "loading": "Loading reported areas",
+    "loadFailed": "Reported areas could not be loaded. Please try again.",
+    "close": "Close",
+    "confidence": {
+      "high": "The AI read these reports clearly",
+      "moderate": "The AI was moderately sure of these reports",
+      "low": "The AI was unsure of these reports, so this area counts for less"
+    }
+  },
+  "planner": {
+    "title": "Plan a walking journey",
+    "hintOrigin": "Search above, or tap the map to set your starting point.",
+    "hintDestination": "Search above, or tap the map to set where you are going.",
+    "start": "Start",
+    "end": "Destination",
+    "useMyLocation": "Use my location",
+    "swap": "Swap",
+    "compare": "Compare routes",
+    "locationDenied": "Location permission was declined. You can still set your start point by tapping the map.",
+    "locationUnavailable": "Your location could not be determined. You can set your start point by tapping the map.",
+    "searchPlaceholder": "Search for a place",
+    "searching": "Searching places",
+    "noResults": "No matching place found. You can also tap the map.",
+    "clearField": "Clear {{field}}",
+    "myLocation": "My location"
+  },
+  "evidence": {
+    "insufficient": "Not enough reports to show a pattern",
+    "limited": "Based on a small number of reports",
+    "moderate": "Based on a moderate number of reports"
+  },
+  "issues": {
+    "incident": {
+      "UNWANTED_FOLLOWING": "Someone followed",
+      "VERBAL_SEXUAL_HARASSMENT": "Verbal sexual harassment",
+      "UNWANTED_PHYSICAL_CONTACT": "Unwanted physical contact",
+      "THREATENING_BEHAVIOUR": "Threatening behaviour",
+      "UNCOMFORTABLE_STARING": "Uncomfortable staring",
+      "OTHER": "Other reported incident",
+      "UNCLEAR": "Unclear from the report",
+      "UNKNOWN": "Other reported incident"
+    },
+    "concern": {
+      "POOR_STREET_LIGHTING": "Poor street lighting",
+      "ISOLATED_OR_DESERTED_ROAD": "Isolated or deserted road",
+      "UNSAFE_BUS_STOP": "Bus stop felt unsafe",
+      "FEELING_UNSAFE_WITHOUT_CONFIRMED_INCIDENT": "Felt unsafe, no incident confirmed",
+      "PREVIOUS_SAFETY_CONCERNS_AT_LOCATION": "Earlier concerns at this place",
+      "OTHER": "Other safety concern",
+      "UNCLEAR": "Unclear from the report",
+      "UNKNOWN": "Other safety concern"
+    }
+  },
+  "routes": {
+    "title": "Compare walking routes",
+    "recommended": "Fewer reported areas",
+    "role": {
+      "fastest": "Fastest route",
+      "lower-exposure": "Fewer reported areas",
+      "alternative": "Another route"
+    },
+    "duration": "{{minutes}} min",
+    "extraTime": "{{minutes}} min longer",
+    "hotspotsPassed_zero": "Passes no reported areas",
+    "hotspotsPassed_one": "Passes {{count}} reported area",
+    "hotspotsPassed_other": "Passes {{count}} reported areas",
+    "noReportedIssues": "No reported issues along this route",
+    "noAlternativeTitle": "No lower-exposure route found",
+    "noAlternativeDescription": "No reasonable alternative avoided more reported areas, so only the fastest route is shown.",
+    "loadFailed": "Routes could not be compared. Please try again.",
+    "disclaimer": "Route comparisons are estimates based on reported incidents. No route is guaranteed to be safe. Use your own judgement.",
+    "approximateGeometry": "These paths are approximate. The routing service could not be reached, so they do not follow real streets."
+  },
+  "timePeriod": {
+    "label": "Time of day",
+    "all": "Any time",
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "night": "Night",
+    "late_night": "Late night",
+    "not_sure": "Time not given",
+    "nowLabel": "{{period}} (now)",
+    "defaultedToNow": "Showing {{period}}, the current time. Choose another period to compare."
+  }
+}
