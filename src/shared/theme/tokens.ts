@@ -1,0 +1,31 @@
+export const tokens = {
+  colors: {
+    primary: '#145E59',
+    onPrimary: '#FFFFFF',
+    primaryContainer: '#D6EFEB',
+    onPrimaryContainer: '#103B37',
+    secondary: '#465C75',
+    onSecondary: '#FFFFFF',
+    secondaryContainer: '#E0EAF5',
+    onSecondaryContainer: '#21364C',
+    background: '#F4F7F7',
+    surface: '#FFFFFF',
+    text: '#192C2B',
+    textMuted: '#4D6060',
+    outline: '#6D8080',
+    status: {
+      info: '#245A89',
+      success: '#25633C',
+      warning: '#785500',
+      error: '#A62532',
+      unknown: '#535E68',
+    },
+  },
+  spacing: { xs: 4, sm: 8, md: 16, lg: 24, xl: 32 },
+  radii: { sm: 8, md: 16, lg: 24 },
+  typography: {
+    title: { fontSize: 28, lineHeight: 40 },
+    body: { fontSize: 16, lineHeight: 28 },
+    label: { fontSize: 14, lineHeight: 24 },
+  },
+} as const;

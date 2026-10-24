@@ -1,0 +1,17 @@
+{
+  "appName": "SafeRoute AI",
+  "tagline": "Personal safety, with care",
+  "reportTab": "Report",
+  "safetyTab": "Safety Map",
+  "reportTabAccessibility": "Report tab",
+  "safetyTabAccessibility": "Safety Map tab",
+  "language": "Interface language",
+  "underDevelopment": "Under development",
+  "loading": "Loading…",
+  "retry": "Retry",
+  "error": "Something went wrong. Please try again.",
+  "demoMode": "Demo mode · sample data",
+  "demoAvailable": "The demo service is available. No report has been submitted.",
+  "apiUnavailable": "API mode is selected. Backend operations are not connected yet.",
+  "serviceStatus": "Development status"
+}
