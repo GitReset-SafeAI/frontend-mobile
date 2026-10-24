@@ -157,6 +157,12 @@ export function buildSyntheticComparison(
     recommendedRouteId: best?.id ?? null,
     lowestExposureRouteId: leastExposed?.id ?? null,
     clearRouteId: clear?.id ?? null,
+    originInReportedArea: hotspots.some(
+      (hotspot) => distanceMeters(origin, hotspot.center) <= hotspot.radiusM,
+    ),
+    destinationInReportedArea: hotspots.some(
+      (hotspot) => distanceMeters(destination, hotspot.center) <= hotspot.radiusM,
+    ),
     evidenceLevel,
     travelMode,
     // Mock geometry is a drawn line, never the street network.

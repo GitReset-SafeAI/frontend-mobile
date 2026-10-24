@@ -95,7 +95,9 @@
     "lowestExposure": "Fewest reported areas of these",
     "roadNetworkWalking": "Walking paths follow the road network: the routing service has no separate pedestrian profile. Check crossings and footpaths yourself.",
     "clearRoute": "Avoids everything reported",
-    "clearRouteNote": "This route enters no reported area. It is offered however long it takes, so check the extra time before choosing it."
+    "clearRouteNote": "This route enters no reported area. It is offered however long it takes, so check the extra time before choosing it.",
+    "originInArea": "Your starting point is inside a reported area, so no route can avoid it.",
+    "destinationInArea": "Your destination is inside a reported area, so no route can avoid it."
   },
   "timePeriod": {
     "label": "Time of day",

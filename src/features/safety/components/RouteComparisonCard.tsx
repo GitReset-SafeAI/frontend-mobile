@@ -31,6 +31,15 @@ export function RouteComparisonCard({
       icon={comparison.travelMode === 'driving' ? 'car' : 'walk'}
       testID="routes-card"
     >
+        {/* An area around an endpoint cannot be routed away from, so say so
+            rather than leaving every route looking unavoidably exposed. */}
+        {comparison.originInReportedArea ? (
+          <Text variant="bodyMedium" style={styles.muted}>{t('routes.originInArea')}</Text>
+        ) : null}
+        {comparison.destinationInReportedArea ? (
+          <Text variant="bodyMedium" style={styles.muted}>{t('routes.destinationInArea')}</Text>
+        ) : null}
+
         {comparison.recommendedRouteId === null ? (
           <View style={styles.notice}>
             <Icon source="information-outline" size={20} color={tokens.colors.status.info} />
