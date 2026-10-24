@@ -28,7 +28,7 @@
     }
   },
   "planner": {
-    "title": "Plan a walking journey",
+    "title": "Plan a journey",
     "start": "Start",
     "end": "Destination",
     "useMyLocation": "Use my location",
@@ -41,7 +41,7 @@
     "noResults": "No matching place found. You can also tap the map.",
     "clearField": "Clear {{field}}",
     "myLocation": "My location",
-    "hint": "Search for a place, or use your current location as the start. Tap a marked area on the map to see what was reported there."
+    "hint": "Tap a marked area on the map to see what was reported there."
   },
   "evidence": {
     "insufficient": "Not enough reports to show a pattern",
@@ -71,7 +71,7 @@
     }
   },
   "routes": {
-    "title": "Compare walking routes",
+    "title": "Compare routes",
     "recommended": "Fewer reported areas",
     "role": {
       "fastest": "Fastest route",

@@ -94,3 +94,30 @@ describe('safety map screen', () => {
     queryClient.clear();
   });
 });
+
+describe('on-map labels', () => {
+  beforeEach(async () => { await i18n.changeLanguage('en'); });
+
+  it('shows the report count on each reported area', async () => {
+    const { queryClient } = await renderWithProviders(<SafetyMapScreen />);
+    await screen.findByText('What these areas mean');
+
+    // The count is readable on the map, not only after opening a card.
+    expect(screen.getAllByText(/^\d+$/).length).toBeGreaterThan(0);
+    queryClient.clear();
+  });
+
+  it('shows walking time on every route once they are compared', async () => {
+    const { queryClient } = await renderWithProviders(<SafetyMapScreen />);
+    await screen.findByText('What these areas mean');
+
+    await searchAndPick('planner-origin', 'Bamba', 'Bambalapitiya Railway Station');
+    await searchAndPick('planner-destination', 'Majestic', 'Majestic City');
+    await fireEvent.press(screen.getByText('Compare routes'));
+    await screen.findByText('Fastest route');
+
+    const durations = screen.getAllByText(/^\d+ min$/);
+    expect(durations.length).toBeGreaterThanOrEqual(2);
+    queryClient.clear();
+  });
+});

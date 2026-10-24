@@ -140,6 +140,11 @@ export function SafetyMapScreen() {
             days: hotspotsQuery.data?.windowDays ?? 30,
           })
         }
+        routeLabel={(route) =>
+          `${t(`routes.role.${route.role}`)} · ${t('routes.hotspotsPassed', {
+            count: route.hotspotsPassed,
+          })}`
+        }
         onHotspotPress={setSelectedHotspot}
         onRoutePress={setSelectedRouteId}
       />

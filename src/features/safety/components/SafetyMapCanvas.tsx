@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import MapView, { Circle, Marker, Polyline } from 'react-native-maps';
 
@@ -6,6 +6,7 @@ import { mapsConfig } from '../../../config/maps';
 import type { Coordinate, Hotspot, Route } from '../../../services/contracts';
 import { tokens } from '../../../shared/theme/tokens';
 import { hotspotFill, hotspotMarkerColor } from '../constants/issueTypes';
+import { HotspotCountLabel, RouteDurationLabel } from './MapLabels';
 
 interface SafetyMapCanvasProps {
   hotspots: Hotspot[];
@@ -16,6 +17,7 @@ interface SafetyMapCanvasProps {
   originLabel: string;
   destinationLabel: string;
   hotspotLabel: (hotspot: Hotspot) => string;
+  routeLabel: (route: Route) => string;
   onHotspotPress: (hotspot: Hotspot) => void;
   onRoutePress: (routeId: string) => void;
 }
@@ -29,10 +31,23 @@ export function SafetyMapCanvas({
   originLabel,
   destinationLabel,
   hotspotLabel,
+  routeLabel,
   onHotspotPress,
   onRoutePress,
 }: SafetyMapCanvasProps) {
   const mapRef = useRef<MapView | null>(null);
+  // A marker with custom contents must redraw while it mounts, then stop:
+  // leaving tracking on re-rasterises every label on each frame and stutters.
+  // Tracking is derived from whether this set of labels has settled yet, so
+  // changing the labels starts it again without a render-time state write.
+  const labelSignature = `${hotspots.length}|${routes.length}|${selectedRouteId ?? ''}`;
+  const [settledSignature, setSettledSignature] = useState<string | null>(null);
+  const tracksLabels = settledSignature !== labelSignature;
+
+  useEffect(() => {
+    const timer = setTimeout(() => setSettledSignature(labelSignature), 1200);
+    return () => clearTimeout(timer);
+  }, [labelSignature]);
 
   // Frame the journey once routes arrive, the way a map app zooms to fit.
   useEffect(() => {
@@ -63,16 +78,22 @@ export function SafetyMapCanvas({
           />
         ))}
 
-        {/* One marker per aggregated area, carrying its dominant issue type.
-            Individual reports are never plotted. */}
+        {/* One marker per aggregated area, showing how many reports are behind
+            it. Individual reports are never plotted. */}
         {hotspots.map((hotspot) => (
           <Marker
             key={`marker-${hotspot.id}`}
             coordinate={hotspot.center}
             title={hotspotLabel(hotspot)}
-            pinColor={hotspotMarkerColor(hotspot)}
+            anchor={{ x: 0.5, y: 0.5 }}
+            tracksViewChanges={tracksLabels}
             onPress={() => onHotspotPress(hotspot)}
-          />
+          >
+            <HotspotCountLabel
+              count={hotspot.reportCount}
+              color={hotspotMarkerColor(hotspot)}
+            />
+          </Marker>
         ))}
 
         {/* Unselected routes stay visible so their issues can be compared, and
@@ -91,6 +112,28 @@ export function SafetyMapCanvas({
               }
             />
           ))}
+
+        {/* Walking time sits on each route, as on a familiar map. */}
+        {routes.map((route) => {
+          const midpoint = route.geometry[Math.floor(route.geometry.length / 2)];
+          if (!midpoint) return null;
+          return (
+            <Marker
+              key={`duration-${route.id}`}
+              coordinate={midpoint}
+              anchor={{ x: 0.5, y: 0.5 }}
+              tracksViewChanges={tracksLabels}
+              title={routeLabel(route)}
+              onPress={() => onRoutePress(route.id)}
+            >
+              <RouteDurationLabel
+                minutes={Math.max(1, Math.round(route.durationSeconds / 60))}
+                extraMinutes={Math.round(route.extraDurationSeconds / 60)}
+                selected={route.id === selectedRouteId}
+              />
+            </Marker>
+          );
+        })}
 
         {origin ? <Marker coordinate={origin} title={originLabel} pinColor={tokens.colors.status.info} /> : null}
         {destination ? (
