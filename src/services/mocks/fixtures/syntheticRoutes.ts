@@ -112,16 +112,21 @@ export function buildSyntheticComparison(
     extraDurationSeconds: Math.max(0, route.durationSeconds - fastest.durationSeconds),
   }));
 
-  // Same rule the backend will apply: recommend only a meaningful exposure
-  // reduction within an acceptable detour.
-  const best = routes
-    .slice(1)
-    .filter(
-      (route) =>
-        route.exposureScore <= fastest.exposureScore * 0.75 &&
-        route.extraDurationSeconds <= Math.max(300, fastest.durationSeconds * 0.3),
-    )
-    .sort((a, b) => a.exposureScore - b.exposureScore)[0];
+  // Same rule the backend applies. Exposure decays with distance, so a route
+  // that enters no reported area still scores slightly above zero; without an
+  // absolute floor a meaningless gap would recommend a real detour.
+  const nothingToAvoid = fastest.hotspotsPassed === 0 || fastest.exposureScore < 5;
+  const best = nothingToAvoid
+    ? undefined
+    : routes
+        .slice(1)
+        .filter(
+          (route) =>
+            route.exposureScore <= fastest.exposureScore * 0.75 &&
+            fastest.exposureScore - route.exposureScore >= 5 &&
+            route.extraDurationSeconds <= Math.max(300, fastest.durationSeconds * 0.3),
+        )
+        .sort((a, b) => a.exposureScore - b.exposureScore)[0];
 
   return {
     routes,

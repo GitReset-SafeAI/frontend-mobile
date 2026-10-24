@@ -72,7 +72,7 @@
   },
   "routes": {
     "title": "Compare routes",
-    "recommended": "Fewer reported areas",
+    "recommended": "Suggested",
     "role": {
       "fastest": "Fastest route",
       "lower-exposure": "Fewer reported areas",
