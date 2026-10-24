@@ -1,4 +1,7 @@
 import type { AppServices, HotspotsRequest } from '../contracts';
+import { z } from 'zod';
+
+import { placeSuggestionSchema } from '../contracts/places';
 import {
   hotspotsResultSchema,
   routeComparisonResultSchema,
@@ -26,11 +29,18 @@ export const apiServices: AppServices = {
       throw new ApiError('not-implemented', 'The backend status contract has not been agreed.');
     },
   },
-  // Geocoding will be proxied by the backend so provider keys stay off the
-  // device; no endpoint exists yet.
+  // Geocoding is proxied by the backend, so the provider stays off the device.
   places: {
-    async searchPlaces() {
-      throw new ApiError('not-implemented', 'The place search endpoint is not available yet.');
+    async searchPlaces({ query, limit = 6 }) {
+      const trimmed = query.trim();
+      // The endpoint requires at least two characters; asking anyway would be
+      // a guaranteed 422.
+      if (trimmed.length < 2) return [];
+      const params = new URLSearchParams({ q: trimmed, limit: String(limit) });
+      return client.request(
+        `/api/v1/safety-map/places?${params}`,
+        z.array(placeSuggestionSchema),
+      );
     },
   },
   safetyMap: {
