@@ -16,7 +16,6 @@ interface SafetyMapCanvasProps {
   originLabel: string;
   destinationLabel: string;
   hotspotLabel: (hotspot: Hotspot) => string;
-  onMapPress: (coordinate: Coordinate) => void;
   onHotspotPress: (hotspot: Hotspot) => void;
   onRoutePress: (routeId: string) => void;
 }
@@ -30,7 +29,6 @@ export function SafetyMapCanvas({
   originLabel,
   destinationLabel,
   hotspotLabel,
-  onMapPress,
   onHotspotPress,
   onRoutePress,
 }: SafetyMapCanvasProps) {
@@ -53,7 +51,6 @@ export function SafetyMapCanvas({
         style={styles.map}
         initialRegion={mapsConfig.initialRegion}
         testID="safety-map"
-        onPress={(event) => onMapPress(event.nativeEvent.coordinate)}
       >
         {hotspots.map((hotspot) => (
           <Circle

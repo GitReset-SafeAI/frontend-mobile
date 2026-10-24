@@ -29,8 +29,6 @@
   },
   "planner": {
     "title": "Plan a walking journey",
-    "hintOrigin": "Search above, or tap the map to set your starting point.",
-    "hintDestination": "Search above, or tap the map to set where you are going.",
     "start": "Start",
     "end": "Destination",
     "useMyLocation": "Use my location",
@@ -42,7 +40,8 @@
     "searching": "Searching places",
     "noResults": "No matching place found. You can also tap the map.",
     "clearField": "Clear {{field}}",
-    "myLocation": "My location"
+    "myLocation": "My location",
+    "hint": "Search for a place, or use your current location as the start. Tap a marked area on the map to see what was reported there."
   },
   "evidence": {
     "insufficient": "Not enough reports to show a pattern",
