@@ -44,13 +44,6 @@
     "clearField": "Clear {{field}}",
     "myLocation": "My location"
   },
-  "timeBucket": {
-    "label": "Time of day",
-    "all": "Any time",
-    "day": "Daytime",
-    "evening": "Evening",
-    "night": "Night"
-  },
   "evidence": {
     "insufficient": "Not enough reports to show a pattern",
     "limited": "Based on a small number of reports",
@@ -95,6 +88,17 @@
     "noAlternativeTitle": "No lower-exposure route found",
     "noAlternativeDescription": "No reasonable alternative avoided more reported areas, so only the fastest route is shown.",
     "loadFailed": "Routes could not be compared. Please try again.",
-    "disclaimer": "Route comparisons are estimates based on reported incidents. No route is guaranteed to be safe. Use your own judgement."
+    "disclaimer": "Route comparisons are estimates based on reported incidents. No route is guaranteed to be safe. Use your own judgement.",
+    "approximateGeometry": "These paths are approximate. The routing service could not be reached, so they do not follow real streets."
+  },
+  "timePeriod": {
+    "label": "Time of day",
+    "all": "Any time",
+    "morning": "Morning",
+    "afternoon": "Afternoon",
+    "evening": "Evening",
+    "night": "Night",
+    "late_night": "Late night",
+    "not_sure": "Time not given"
   }
 }

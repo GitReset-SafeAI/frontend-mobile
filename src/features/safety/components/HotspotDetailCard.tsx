@@ -33,9 +33,9 @@ export function HotspotDetailCard({ hotspot, windowDays, onDismiss }: HotspotDet
         <Text variant="bodyMedium" style={styles.muted}>
           {t('map.recency', { days: hotspot.mostRecentReportDaysAgo })}
         </Text>
-        {hotspot.peakTimeBucket ? (
+        {hotspot.peakTimePeriod ? (
           <Text variant="bodyMedium" style={styles.muted}>
-            {t('map.peakTime', { bucket: t(`timeBucket.${hotspot.peakTimeBucket}`) })}
+            {t('map.peakTime', { bucket: t(`timePeriod.${hotspot.peakTimePeriod}`) })}
           </Text>
         ) : null}
         <Text variant="bodyMedium" style={styles.muted}>

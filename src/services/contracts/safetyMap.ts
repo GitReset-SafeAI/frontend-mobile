@@ -10,11 +10,17 @@ export const coordinateSchema = z.object({
 
 export type Coordinate = z.infer<typeof coordinateSchema>;
 
-export const timeBucketSchema = z.enum(['day', 'evening', 'night']);
-export const timeBucketFilterSchema = z.enum(['day', 'evening', 'night', 'all']);
+// Mirrors incident_ai_analyses.reported_time, so the filter and the stored
+// value are the same vocabulary and need no translation between modules.
+export const timePeriodSchema = z.enum([
+  'morning', 'afternoon', 'evening', 'night', 'late_night', 'not_sure',
+]);
+export const timePeriodFilterSchema = z.enum([
+  'all', 'morning', 'afternoon', 'evening', 'night', 'late_night', 'not_sure',
+]);
 
-export type TimeBucket = z.infer<typeof timeBucketSchema>;
-export type TimeBucketFilter = z.infer<typeof timeBucketFilterSchema>;
+export type TimePeriod = z.infer<typeof timePeriodSchema>;
+export type TimePeriodFilter = z.infer<typeof timePeriodFilterSchema>;
 
 // Category vocabularies are owned by the incident-AI module
 // (`incident_ai_analyses.IncidentCategory` and `SafetyConcernCategory`). They
@@ -38,7 +44,7 @@ const hotspotWireSchema = z.object({
   intensity: z.number().min(0).max(1),
   top_incident_categories: z.array(incidentCategorySchema).max(3),
   top_safety_concerns: z.array(safetyConcernSchema).max(3),
-  peak_time_bucket: timeBucketSchema.nullable(),
+  peak_time_period: timePeriodSchema.nullable(),
   most_recent_report_days_ago: z.number().int().min(0),
   // Mean AI confidence across the reports behind this area. Reports marked
   // needs_review are excluded upstream and never reach here.
@@ -54,7 +60,7 @@ export const hotspotSchema = hotspotWireSchema.transform((hotspot) => ({
   intensity: hotspot.intensity,
   topIncidentCategories: hotspot.top_incident_categories,
   topSafetyConcerns: hotspot.top_safety_concerns,
-  peakTimeBucket: hotspot.peak_time_bucket,
+  peakTimePeriod: hotspot.peak_time_period,
   mostRecentReportDaysAgo: hotspot.most_recent_report_days_ago,
   meanConfidence: hotspot.mean_confidence,
   evidenceLevel: hotspot.evidence_level,
@@ -91,7 +97,7 @@ export interface BoundingBox {
 
 export interface HotspotsRequest {
   bounds: BoundingBox;
-  timeBucket: TimeBucketFilter;
+  timePeriod: TimePeriodFilter;
   windowDays?: number;
 }
 
@@ -142,11 +148,15 @@ export const routeComparisonResultSchema = z
     // detour. Recommending nothing is a valid, honest answer.
     recommended_route_id: z.string().min(1).nullable(),
     evidence_level: evidenceLevelSchema,
+    // False when the routing service could not be reached and the geometry is
+    // a straight-line approximation rather than real walking directions.
+    uses_street_network: z.boolean(),
   })
   .transform((result) => ({
     routes: result.routes,
     recommendedRouteId: result.recommended_route_id,
     evidenceLevel: result.evidence_level,
+    usesStreetNetwork: result.uses_street_network,
   }));
 
 export type RouteComparisonResult = z.infer<typeof routeComparisonResultSchema>;
@@ -154,7 +164,7 @@ export type RouteComparisonResult = z.infer<typeof routeComparisonResultSchema>;
 export interface RouteComparisonRequest {
   origin: Coordinate;
   destination: Coordinate;
-  timeBucket: TimeBucketFilter;
+  timePeriod: TimePeriodFilter;
 }
 
 export interface SafetyMapService {

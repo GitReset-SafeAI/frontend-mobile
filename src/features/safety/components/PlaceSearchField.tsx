@@ -34,15 +34,17 @@ export function PlaceSearchField({
   const [searching, setSearching] = useState(false);
   const [open, setOpen] = useState(false);
 
+  const searchable = open && query.trim().length >= 2;
+  // Derived rather than cleared in the effect, so a short query simply shows
+  // nothing instead of triggering another render pass.
+  const visible = searchable ? suggestions : [];
+
   useEffect(() => {
-    if (!open || query.trim().length < 2) {
-      setSuggestions([]);
-      return;
-    }
+    if (!searchable) return;
     let active = true;
-    setSearching(true);
     // Debounced so typing does not fire a lookup per keystroke.
     const timer = setTimeout(async () => {
+      if (active) setSearching(true);
       try {
         const results = await services.places.searchPlaces({ query, limit: 6 });
         if (active) setSuggestions(results);
@@ -57,7 +59,7 @@ export function PlaceSearchField({
       active = false;
       clearTimeout(timer);
     };
-  }, [open, query]);
+  }, [searchable, query]);
 
   const handleSelect = (place: PlaceSuggestion) => {
     setQuery('');
@@ -89,15 +91,15 @@ export function PlaceSearchField({
         }
       />
 
-      {open && query.trim().length >= 2 ? (
+      {searchable ? (
         <Surface elevation={2} style={styles.suggestions}>
-          {searching && suggestions.length === 0 ? (
+          {searching && visible.length === 0 ? (
             <ActivityIndicator style={styles.spinner} accessibilityLabel={t('planner.searching')} />
           ) : null}
-          {!searching && suggestions.length === 0 ? (
+          {!searching && visible.length === 0 ? (
             <List.Item title={t('planner.noResults')} titleNumberOfLines={2} />
           ) : null}
-          {suggestions.map((place, index) => (
+          {visible.map((place, index) => (
             <View key={place.id}>
               {index > 0 ? <Divider /> : null}
               <List.Item

@@ -14,11 +14,11 @@ function withinBounds({ bounds }: HotspotsRequest, hotspot: HotspotsResult['hots
   );
 }
 
-function matchesTimeBucket(
+function matchesTimePeriod(
   hotspot: HotspotsResult['hotspots'][number],
-  timeBucket: HotspotsRequest['timeBucket'],
+  timePeriod: HotspotsRequest['timePeriod'],
 ) {
-  return timeBucket === 'all' || hotspot.peakTimeBucket === null || hotspot.peakTimeBucket === timeBucket;
+  return timePeriod === 'all' || hotspot.peakTimePeriod === null || hotspot.peakTimePeriod === timePeriod;
 }
 
 export const mockServices: AppServices = {
@@ -32,7 +32,7 @@ export const mockServices: AppServices = {
     async getHotspots(request) {
       // Mirrors the server filters so the map behaves the same in both modes.
       const hotspots = demoHotspots.hotspots.filter(
-        (hotspot) => withinBounds(request, hotspot) && matchesTimeBucket(hotspot, request.timeBucket),
+        (hotspot) => withinBounds(request, hotspot) && matchesTimePeriod(hotspot, request.timePeriod),
       );
       return {
         ...demoHotspots,
@@ -43,7 +43,7 @@ export const mockServices: AppServices = {
     },
     async compareRoutes(request) {
       const hotspots = demoHotspots.hotspots.filter((hotspot) =>
-        matchesTimeBucket(hotspot, request.timeBucket),
+        matchesTimePeriod(hotspot, request.timePeriod),
       );
       return buildSyntheticComparison(
         request.origin,
