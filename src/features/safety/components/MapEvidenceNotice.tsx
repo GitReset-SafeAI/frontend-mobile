@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Card, Icon, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 
 import type { HotspotsResult } from '../../../services/contracts';
+import { SectionCard } from '../../../shared/components/SectionCard';
 import { tokens } from '../../../shared/theme/tokens';
 
 interface MapEvidenceNoticeProps {
@@ -16,14 +17,16 @@ export function MapEvidenceNotice({ result }: MapEvidenceNoticeProps) {
   const isEmpty = result.hotspots.length === 0;
 
   return (
-    <Card mode="outlined" style={styles.card}>
-      <Card.Content style={styles.content}>
-        <View style={styles.row}>
-          <Icon source="information-outline" size={20} color={tokens.colors.status.info} />
-          <Text variant="labelLarge" style={styles.title}>
-            {t(isEmpty ? 'map.emptyTitle' : 'map.legendTitle')}
-          </Text>
-        </View>
+    <SectionCard
+      title={t(isEmpty ? 'map.emptyTitle' : 'map.legendTitle')}
+      icon="information-outline"
+      // Folded by default so the journey leads. The heading still states the
+      // caveat, and an area with no reports opens itself, because "no reports"
+      // read as "safe" is the misreading that matters most.
+      defaultOpen={isEmpty}
+      testID="evidence-card"
+    >
+      <View style={styles.content}>
         <Text variant="bodyMedium" style={styles.muted}>
           {t(isEmpty ? 'map.emptyDescription' : 'map.legendDescription')}
         </Text>
@@ -34,15 +37,12 @@ export function MapEvidenceNotice({ result }: MapEvidenceNoticeProps) {
           </Text>
         ) : null}
         <Text variant="bodyMedium" style={styles.muted}>{t('map.disclaimer')}</Text>
-      </Card.Content>
-    </Card>
+      </View>
+    </SectionCard>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { borderColor: tokens.colors.border },
   content: { gap: tokens.spacing.xs },
-  row: { flexDirection: 'row', alignItems: 'center', gap: tokens.spacing.sm },
-  title: { color: tokens.colors.textPrimary },
   muted: { color: tokens.colors.textSecondary },
 });

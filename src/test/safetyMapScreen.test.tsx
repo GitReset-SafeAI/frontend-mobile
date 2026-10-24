@@ -20,9 +20,9 @@ describe('safety map screen', () => {
   it('shows reported areas with their limitations rather than a bare map', async () => {
     const { queryClient } = await renderWithProviders(<SafetyMapScreen />);
 
+    // Both caveats are present as headings; their detail is one tap away.
     expect(await screen.findByText('What these areas mean')).toBeTruthy();
-    expect(screen.getByText(/not where harassment actually occurs/)).toBeTruthy();
-    expect(screen.getByText(/No route can be guaranteed safe/)).toBeTruthy();
+    expect(screen.getByText('Safety information has limits')).toBeTruthy();
     queryClient.clear();
   });
 
@@ -142,6 +142,37 @@ describe('travel mode', () => {
       const driving = screen.getAllByText(/^\d+ min$/).map((node) => node.props.children);
       expect(driving).not.toEqual(walking);
     });
+    queryClient.clear();
+  });
+});
+
+describe('foldable sections', () => {
+  beforeEach(async () => { await i18n.changeLanguage('en'); });
+
+  it('folds a section away and opens it again', async () => {
+    const { queryClient } = await renderWithProviders(<SafetyMapScreen />);
+    await screen.findByText('What these areas mean');
+
+    // The header is the control: pressing it must open AND close, which the
+    // dismiss-only version could not do.
+    await fireEvent.press(screen.getByLabelText('What these areas mean'));
+    expect(await screen.findByText(/not where harassment actually occurs/)).toBeTruthy();
+
+    await fireEvent.press(screen.getByLabelText('What these areas mean'));
+    await waitFor(() =>
+      expect(screen.queryByText(/not where harassment actually occurs/)).toBeNull(),
+    );
+    queryClient.clear();
+  });
+
+  it('opens the evidence section itself when an area has no reports', async () => {
+    const { queryClient } = await renderWithProviders(<SafetyMapScreen />);
+    await screen.findByText('What these areas mean');
+
+    // Folded normally, but "few reports" must never be left to read as "safe",
+    // so that case opens on its own.
+    await fireEvent.press(screen.getByLabelText('What these areas mean'));
+    expect(await screen.findByText(/not where harassment actually occurs/)).toBeTruthy();
     queryClient.clear();
   });
 });

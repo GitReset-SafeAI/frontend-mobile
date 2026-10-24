@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Button, Card, IconButton, SegmentedButtons, Text } from 'react-native-paper';
+import { Button, IconButton, SegmentedButtons, Text } from 'react-native-paper';
 
 import type { PlaceSuggestion, TravelMode } from '../../../services/contracts';
+import { SectionCard } from '../../../shared/components/SectionCard';
 import { tokens } from '../../../shared/theme/tokens';
 import { PlaceSearchField } from './PlaceSearchField';
 
@@ -43,14 +44,16 @@ export function JourneyPlanner({
   const { t } = useTranslation('safety');
 
   return (
-    <Card mode="outlined" style={styles.card}>
-      <Card.Title title={t('planner.title')} titleNumberOfLines={2} />
-      <Card.Content style={styles.content}>
-        <View style={styles.fields}>
-          <View style={styles.inputs}>
+    <SectionCard
+      title={t('planner.title')}
+      subtitle={t('planner.subtitle')}
+      icon="map-marker-path"
+      testID="planner-card"
+    >
+        <View style={styles.inputs}>
             <PlaceSearchField
               label={t('planner.start')}
-              icon="circle-outline"
+              icon="record-circle-outline"
               testID="planner-origin"
               value={origin?.label ?? ''}
               placeholder={t('planner.searchPlaceholder')}
@@ -59,26 +62,27 @@ export function JourneyPlanner({
             />
             <PlaceSearchField
               label={t('planner.end')}
-              icon="map-marker"
+              icon="map-marker-check-outline"
               testID="planner-destination"
               value={destination?.label ?? ''}
               placeholder={t('planner.searchPlaceholder')}
               onSelect={(place) => onSelectPlace('destination', place)}
               onClear={() => onClearPoint('destination')}
             />
-          </View>
-          <IconButton
-            icon="swap-vertical"
-            accessibilityLabel={t('planner.swap')}
-            disabled={!origin && !destination}
-            onPress={onSwap}
-          />
         </View>
 
         <View style={styles.actions}>
           <Button mode="text" icon="crosshairs-gps" loading={isLocating} onPress={onUseCurrentLocation}>
             {t('planner.useMyLocation')}
           </Button>
+          <IconButton
+            icon="swap-vertical"
+            mode="outlined"
+            size={18}
+            accessibilityLabel={t('planner.swap')}
+            disabled={!origin && !destination}
+            onPress={onSwap}
+          />
         </View>
 
         <SegmentedButtons
@@ -102,16 +106,17 @@ export function JourneyPlanner({
         >
           {t('planner.compare')}
         </Button>
-      </Card.Content>
-    </Card>
+    </SectionCard>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { borderColor: tokens.colors.border },
-  content: { gap: tokens.spacing.sm },
-  fields: { flexDirection: 'row', alignItems: 'center', gap: tokens.spacing.xs },
-  inputs: { flex: 1, gap: tokens.spacing.sm },
-  actions: { flexDirection: 'row', flexWrap: 'wrap' },
+  // Full width: the inputs hold place names, which are long.
+  inputs: { gap: tokens.spacing.sm },
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   hint: { color: tokens.colors.textSecondary },
 });

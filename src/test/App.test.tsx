@@ -19,7 +19,8 @@ describe('foundation navigation and providers', () => {
     await screen.findByText('The demo service is available. No report has been submitted.');
     await fireEvent.press(screen.getByLabelText('Safety Map tab'));
     expect(await screen.findByText('Explore your journey')).toBeTruthy();
-    expect(screen.getByText(/No route can be guaranteed safe/)).toBeTruthy();
+    // The caveat is a section heading; its detail sits one tap inside.
+    expect(screen.getByText('Safety information has limits')).toBeTruthy();
     queryClient.clear();
   });
 
