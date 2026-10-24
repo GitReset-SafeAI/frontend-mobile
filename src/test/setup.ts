@@ -15,3 +15,30 @@ jest.mock('expo-font', () => ({
   isLoading: () => false,
   loadAsync: jest.fn(async () => undefined),
 }));
+
+// Native map and location modules are outside the JS rendering tests.
+jest.mock('react-native-maps', () => {
+  const React = require('react');
+  const { Pressable, View } = require('react-native');
+  const stub = (name: string) =>
+    function MapStub(props: Record<string, unknown>) {
+      return React.createElement(View, { testID: name, ...props }, props.children as never);
+    };
+  // MapView is a Pressable stub so map taps can be exercised in tests.
+  function MapViewStub(props: Record<string, unknown>) {
+    return React.createElement(Pressable, { testID: 'MapView', ...props }, props.children as never);
+  }
+  return {
+    __esModule: true,
+    default: MapViewStub,
+    Marker: stub('Marker'),
+    Circle: stub('Circle'),
+    Polyline: stub('Polyline'),
+  };
+});
+
+jest.mock('expo-location', () => ({
+  Accuracy: { Balanced: 3 },
+  requestForegroundPermissionsAsync: jest.fn(async () => ({ granted: false })),
+  getCurrentPositionAsync: jest.fn(async () => ({ coords: { latitude: 0, longitude: 0 } })),
+}));
