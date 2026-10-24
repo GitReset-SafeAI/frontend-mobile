@@ -1,0 +1,17 @@
+{
+  "appName": "SafeRoute AI",
+  "tagline": "ඔබේ ආරක්ෂාව වෙනුවෙන්",
+  "reportTab": "වාර්තා කරන්න",
+  "safetyTab": "ආරක්ෂක සිතියම",
+  "reportTabAccessibility": "වාර්තා කිරීමේ ටැබය",
+  "safetyTabAccessibility": "ආරක්ෂක සිතියම් ටැබය",
+  "language": "යෙදුමේ භාෂාව",
+  "underDevelopment": "සංවර්ධනය වෙමින් පවතී",
+  "loading": "පූරණය වෙමින්…",
+  "retry": "නැවත උත්සාහ කරන්න",
+  "error": "දෝෂයක් ඇති විය. නැවත උත්සාහ කරන්න.",
+  "demoMode": "ආදර්ශ මාදිලිය · නියැදි දත්ත",
+  "demoAvailable": "ආදර්ශ සේවාව භාවිත කළ හැකිය. කිසිදු වාර්තාවක් ඉදිරිපත් කර නැත.",
+  "apiUnavailable": "API මාදිලිය තෝරා ඇත. පසුපස සේවා තවම සම්බන්ධ කර නැත.",
+  "serviceStatus": "සංවර්ධන තත්ත්වය"
+}
