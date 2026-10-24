@@ -8,7 +8,7 @@ import type {
   Hotspot,
   HotspotsRequest,
   PlaceSuggestion,
-  TimeBucketFilter,
+  TimePeriodFilter,
 } from '../../../services/contracts';
 import { LanguageSwitcher } from '../../../shared/components/LanguageSwitcher';
 import { useCurrentLocation } from '../../../shared/hooks/useCurrentLocation';
@@ -23,7 +23,7 @@ import {
 import { MapEvidenceNotice } from '../components/MapEvidenceNotice';
 import { RouteComparisonCard } from '../components/RouteComparisonCard';
 import { SafetyMapCanvas } from '../components/SafetyMapCanvas';
-import { TimeBucketSelector } from '../components/TimeBucketSelector';
+import { TimePeriodSelector } from '../components/TimePeriodSelector';
 import { useHotspots } from '../hooks/useHotspots';
 import { useRouteComparison } from '../hooks/useRouteComparison';
 
@@ -35,7 +35,7 @@ const defaultBounds: HotspotsRequest['bounds'] = {
 
 export function SafetyMapScreen() {
   const { t } = useTranslation('safety');
-  const [timeBucket, setTimeBucket] = useState<TimeBucketFilter>('all');
+  const [timePeriod, setTimePeriod] = useState<TimePeriodFilter>('all');
   const [origin, setOrigin] = useState<PlannerPoint | null>(null);
   const [destination, setDestination] = useState<PlannerPoint | null>(null);
   const [activeTarget, setActiveTarget] = useState<PlannerTarget>('origin');
@@ -43,8 +43,8 @@ export function SafetyMapScreen() {
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
 
   const request = useMemo<HotspotsRequest>(
-    () => ({ bounds: defaultBounds, timeBucket }),
-    [timeBucket],
+    () => ({ bounds: defaultBounds, timePeriod }),
+    [timePeriod],
   );
   const hotspotsQuery = useHotspots(request);
   const comparison = useRouteComparison();
@@ -93,10 +93,10 @@ export function SafetyMapScreen() {
   const handleCompare = useCallback(() => {
     if (!origin || !destination) return;
     comparison.mutate(
-      { origin: origin.coordinate, destination: destination.coordinate, timeBucket },
+      { origin: origin.coordinate, destination: destination.coordinate, timePeriod },
       { onSuccess: (result) => setSelectedRouteId(result.recommendedRouteId ?? result.routes[0].id) },
     );
-  }, [comparison, destination, origin, timeBucket]);
+  }, [comparison, destination, origin, timePeriod]);
 
   const handleSwap = useCallback(() => {
     setOrigin(destination);
@@ -183,7 +183,7 @@ export function SafetyMapScreen() {
         />
       ) : null}
 
-      <TimeBucketSelector value={timeBucket} onChange={setTimeBucket} />
+      <TimePeriodSelector value={timePeriod} onChange={setTimePeriod} />
 
       {hotspotsQuery.isPending ? (
         <ActivityIndicator accessibilityLabel={t('map.loading')} />

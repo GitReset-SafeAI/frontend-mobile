@@ -23,7 +23,7 @@ const demoHotspotsWire = {
       intensity: 0.82,
       top_incident_categories: ['UNWANTED_FOLLOWING', 'VERBAL_SEXUAL_HARASSMENT'],
       top_safety_concerns: [],
-      peak_time_bucket: 'evening',
+      peak_time_period: 'evening',
       most_recent_report_days_ago: 2,
       mean_confidence: 0.88,
       evidence_level: 'moderate',
@@ -36,7 +36,7 @@ const demoHotspotsWire = {
       intensity: 0.55,
       top_incident_categories: [],
       top_safety_concerns: ['POOR_STREET_LIGHTING', 'ISOLATED_OR_DESERTED_ROAD'],
-      peak_time_bucket: 'night',
+      peak_time_period: 'night',
       most_recent_report_days_ago: 4,
       mean_confidence: 0.61,
       evidence_level: 'limited',
@@ -49,7 +49,7 @@ const demoHotspotsWire = {
       intensity: 0.64,
       top_incident_categories: ['UNWANTED_PHYSICAL_CONTACT', 'VERBAL_SEXUAL_HARASSMENT'],
       top_safety_concerns: ['UNSAFE_BUS_STOP'],
-      peak_time_bucket: 'day',
+      peak_time_period: 'afternoon',
       most_recent_report_days_ago: 5,
       mean_confidence: 0.79,
       evidence_level: 'moderate',
@@ -62,7 +62,7 @@ const demoHotspotsWire = {
       intensity: 0.41,
       top_incident_categories: ['UNCOMFORTABLE_STARING'],
       top_safety_concerns: [],
-      peak_time_bucket: 'night',
+      peak_time_period: 'night',
       most_recent_report_days_ago: 11,
       mean_confidence: 0.54,
       evidence_level: 'limited',
@@ -75,7 +75,7 @@ const demoHotspotsWire = {
       intensity: 0.18,
       top_incident_categories: [],
       top_safety_concerns: ['POOR_STREET_LIGHTING'],
-      peak_time_bucket: null,
+      peak_time_period: null,
       most_recent_report_days_ago: 24,
       mean_confidence: 0.42,
       evidence_level: 'limited',
@@ -89,6 +89,8 @@ export const demoHotspots = hotspotsResultSchema.parse(demoHotspotsWire);
 const demoRouteComparisonWire = {
   recommended_route_id: 'demo-route-lower-exposure',
   evidence_level: 'limited',
+  // Demo geometry is drawn, never the street network.
+  uses_street_network: false,
   routes: [
     {
       id: 'demo-route-fastest',

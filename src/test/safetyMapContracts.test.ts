@@ -10,7 +10,7 @@ const colomboBounds: HotspotsRequest = {
     southWest: { latitude: 6.82, longitude: 79.82 },
     northEast: { latitude: 6.98, longitude: 79.93 },
   },
-  timeBucket: 'all',
+  timePeriod: 'all',
 };
 
 describe('safety map contract', () => {
@@ -42,11 +42,11 @@ describe('safety map contract', () => {
   it('filters hotspots by time bucket', async () => {
     const result = await selectServices('mock').safetyMap.getHotspots({
       ...colomboBounds,
-      timeBucket: 'night',
+      timePeriod: 'night',
     });
 
     for (const hotspot of result.hotspots) {
-      expect(hotspot.peakTimeBucket === null || hotspot.peakTimeBucket === 'night').toBe(true);
+      expect(hotspot.peakTimePeriod === null || hotspot.peakTimePeriod === 'night').toBe(true);
     }
   });
 
@@ -54,7 +54,7 @@ describe('safety map contract', () => {
     const result = await selectServices('mock').safetyMap.compareRoutes({
       origin: { latitude: 6.8872, longitude: 79.8597 },
       destination: { latitude: 6.8951, longitude: 79.8541 },
-      timeBucket: 'night',
+      timePeriod: 'night',
     });
 
     const fastest = result.routes.find((route) => route.role === 'fastest');
@@ -72,7 +72,7 @@ describe('safety map contract', () => {
     const result = await selectServices('mock').safetyMap.compareRoutes({
       origin: { latitude: 6.8872, longitude: 79.8597 },
       destination: { latitude: 6.8951, longitude: 79.8541 },
-      timeBucket: 'all',
+      timePeriod: 'all',
     });
 
     if (result.recommendedRouteId === null) return;
@@ -87,7 +87,7 @@ describe('safety map contract', () => {
   it('rejects a response that exposes precise incident coordinates', () => {
     const tooPrecise = {
       id: 'x', center: { latitude: 6.9, longitude: 79.86 }, radius_m: 20, report_count: 1,
-      intensity: 0.9, top_categories: [], peak_time_bucket: null,
+      intensity: 0.9, top_categories: [], peak_time_period: null,
       most_recent_report_days_ago: 0, evidence_level: 'limited',
     };
     expect(hotspotSchema.safeParse(tooPrecise).success).toBe(false);
@@ -99,7 +99,7 @@ describe('safety map contract', () => {
     const area = {
       id: 'a', center: { latitude: 6.891, longitude: 79.856 }, radiusM: 400,
       reportCount: 9, intensity: 0.8, topIncidentCategories: ['UNWANTED_FOLLOWING'],
-      topSafetyConcerns: [], peakTimeBucket: null, mostRecentReportDaysAgo: 1,
+      topSafetyConcerns: [], peakTimePeriod: null, mostRecentReportDaysAgo: 1,
       meanConfidence: 0.9, evidenceLevel: 'moderate' as const,
     };
 
@@ -124,11 +124,13 @@ describe('safety map contract', () => {
     expect(queryKeys.hotspots(panned)).toEqual(queryKeys.hotspots(colomboBounds));
   });
 
-  it('fails explicitly in API mode without fetching', async () => {
+  it('fails explicitly in API mode rather than serving synthetic data', async () => {
     const fetchSpy = jest.spyOn(global, 'fetch');
     try {
+      // No base URL is configured in tests, so the adapter must refuse before
+      // any request, and must never fall back to the mock fixtures.
       await expect(selectServices('api').safetyMap.getHotspots(colomboBounds)).rejects.toMatchObject({
-        kind: 'not-implemented', name: 'ApiError',
+        kind: 'configuration', name: 'ApiError',
       } satisfies Partial<ApiError>);
       expect(fetchSpy).not.toHaveBeenCalled();
     } finally { fetchSpy.mockRestore(); }

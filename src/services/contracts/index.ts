@@ -16,8 +16,8 @@ export type {
   RouteComparisonResult,
   RouteRole,
   SafetyMapService,
-  TimeBucket,
-  TimeBucketFilter,
+  TimePeriod,
+  TimePeriodFilter,
 } from './safetyMap';
 
 export interface AppServices {

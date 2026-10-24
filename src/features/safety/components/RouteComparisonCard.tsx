@@ -49,6 +49,13 @@ export function RouteComparisonCard({
           />
         ))}
 
+        {/* Say plainly when the geometry is not real walking directions. */}
+        {comparison.usesStreetNetwork ? null : (
+          <Text variant="bodyMedium" style={styles.disclaimer}>
+            {t('routes.approximateGeometry')}
+          </Text>
+        )}
+
         <Text variant="bodyMedium" style={styles.disclaimer}>
           {t('routes.disclaimer')}
         </Text>

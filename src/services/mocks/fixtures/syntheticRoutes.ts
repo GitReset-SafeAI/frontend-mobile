@@ -127,5 +127,7 @@ export function buildSyntheticComparison(
     routes,
     recommendedRouteId: best?.id ?? null,
     evidenceLevel,
+    // Mock geometry is a drawn line, never the street network.
+    usesStreetNetwork: false,
   };
 }
