@@ -89,6 +89,9 @@ export const demoHotspots = hotspotsResultSchema.parse(demoHotspotsWire);
 const demoRouteComparisonWire = {
   recommended_route_id: 'demo-route-lower-exposure',
   lowest_exposure_route_id: 'demo-route-lower-exposure',
+  clear_route_id: null,
+  origin_in_reported_area: false,
+  destination_in_reported_area: false,
   evidence_level: 'limited',
   travel_mode: 'walking',
   // Demo geometry is drawn, never the street network.
@@ -161,4 +164,7 @@ export const demoRouteComparisonWithoutRecommendation = routeComparisonResultSch
   routes: [demoRouteComparisonWire.routes[0]],
   recommended_route_id: null,
   lowest_exposure_route_id: demoRouteComparisonWire.routes[0].id,
+  clear_route_id: null,
+  origin_in_reported_area: false,
+  destination_in_reported_area: false,
 });

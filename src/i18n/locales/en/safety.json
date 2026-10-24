@@ -78,7 +78,8 @@
     "role": {
       "fastest": "Fastest route",
       "lower-exposure": "Fewer reported areas",
-      "alternative": "Another route"
+      "alternative": "Another route",
+      "avoids-all": "Avoids all reported areas"
     },
     "duration": "{{minutes}} min",
     "extraTime": "{{minutes}} min longer",
@@ -92,7 +93,11 @@
     "disclaimer": "Route comparisons are estimates based on reported incidents. No route is guaranteed to be safe. Use your own judgement.",
     "approximateGeometry": "These paths are approximate. The routing service could not be reached, so they do not follow real streets.",
     "lowestExposure": "Fewest reported areas of these",
-    "roadNetworkWalking": "Walking paths follow the road network: the routing service has no separate pedestrian profile. Check crossings and footpaths yourself."
+    "roadNetworkWalking": "Walking paths follow the road network: the routing service has no separate pedestrian profile. Check crossings and footpaths yourself.",
+    "clearRoute": "Avoids everything reported",
+    "clearRouteNote": "This route enters no reported area. It is offered however long it takes, so check the extra time before choosing it.",
+    "originInArea": "Your starting point is inside a reported area, so no route can avoid it.",
+    "destinationInArea": "Your destination is inside a reported area, so no route can avoid it."
   },
   "timePeriod": {
     "label": "Time of day",

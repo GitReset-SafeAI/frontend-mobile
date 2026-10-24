@@ -31,6 +31,15 @@ export function RouteComparisonCard({
       icon={comparison.travelMode === 'driving' ? 'car' : 'walk'}
       testID="routes-card"
     >
+        {/* An area around an endpoint cannot be routed away from, so say so
+            rather than leaving every route looking unavoidably exposed. */}
+        {comparison.originInReportedArea ? (
+          <Text variant="bodyMedium" style={styles.muted}>{t('routes.originInArea')}</Text>
+        ) : null}
+        {comparison.destinationInReportedArea ? (
+          <Text variant="bodyMedium" style={styles.muted}>{t('routes.destinationInArea')}</Text>
+        ) : null}
+
         {comparison.recommendedRouteId === null ? (
           <View style={styles.notice}>
             <Icon source="information-outline" size={20} color={tokens.colors.status.info} />
@@ -53,9 +62,12 @@ export function RouteComparisonCard({
             // route to act on rather than only "nothing qualified".
             lowestExposure={
               comparison.recommendedRouteId === null &&
+              comparison.clearRouteId === null &&
               route.id === comparison.lowestExposureRouteId &&
               comparison.routes.length > 1
             }
+            // A route through nothing at all, however long it takes.
+            clear={route.id === comparison.clearRouteId}
             onPress={() => onSelectRoute(route.id)}
           />
         ))}
@@ -88,10 +100,18 @@ interface RouteRowProps {
   selected: boolean;
   recommended: boolean;
   lowestExposure: boolean;
+  clear: boolean;
   onPress: () => void;
 }
 
-function RouteRow({ route, selected, recommended, lowestExposure, onPress }: RouteRowProps) {
+function RouteRow({
+  route,
+  selected,
+  recommended,
+  lowestExposure,
+  clear,
+  onPress,
+}: RouteRowProps) {
   const { t } = useTranslation('safety');
   const label = t(`routes.role.${route.role}`);
   const issues = routeIssues(route);
@@ -112,6 +132,9 @@ function RouteRow({ route, selected, recommended, lowestExposure, onPress }: Rou
           {lowestExposure ? (
             <Chip compact icon="chart-line-variant">{t('routes.lowestExposure')}</Chip>
           ) : null}
+          {clear && !recommended ? (
+            <Chip compact icon="shield-outline">{t('routes.clearRoute')}</Chip>
+          ) : null}
         </View>
 
         <Text variant="bodyMedium">
@@ -124,6 +147,10 @@ function RouteRow({ route, selected, recommended, lowestExposure, onPress }: Rou
         <Text variant="bodyMedium" style={styles.muted}>
           {t('routes.hotspotsPassed', { count: route.hotspotsPassed })}
         </Text>
+
+        {clear ? (
+          <Text variant="bodySmall" style={styles.muted}>{t('routes.clearRouteNote')}</Text>
+        ) : null}
 
         {issues.length > 0 ? (
           <View style={styles.issues}>
