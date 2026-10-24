@@ -65,3 +65,7 @@ Before adding a real map, confirm map/routing-provider compatibility and configu
 Physical-device checks remain necessary for small screens, Sinhala glyphs, font scaling, screen readers, permissions, recording cleanup, and native maps. No route or location may be described as guaranteed safe.
 
 See [architecture](docs/architecture.md), [contract decisions](docs/contract-decisions.md), [contributing](CONTRIBUTING.md), and the [verification results and known dependency advisories](docs/verification.md).
+
+## License
+
+Released under the [MIT License](LICENSE).

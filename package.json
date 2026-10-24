@@ -2,6 +2,7 @@
   "name": "safestep-mobile",
   "description": "SafeStep Expo mobile frontend foundation",
   "version": "1.0.0",
+  "license": "MIT",
   "main": "index.ts",
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
