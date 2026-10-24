@@ -121,3 +121,27 @@ describe('on-map labels', () => {
     queryClient.clear();
   });
 });
+
+describe('travel mode', () => {
+  beforeEach(async () => { await i18n.changeLanguage('en'); });
+
+  it('compares by car in less time than on foot over the same roads', async () => {
+    const { queryClient } = await renderWithProviders(<SafetyMapScreen />);
+    await screen.findByText('What these areas mean');
+
+    await searchAndPick('planner-origin', 'Bamba', 'Bambalapitiya Railway Station');
+    await searchAndPick('planner-destination', 'Fort', 'Colombo Fort Railway Station');
+
+    await fireEvent.press(screen.getByText('Compare routes'));
+    await screen.findByText('Fastest route');
+    const walking = screen.getAllByText(/^\d+ min$/).map((node) => node.props.children);
+
+    await fireEvent.press(screen.getByText('Drive'));
+    await fireEvent.press(screen.getByText('Compare routes'));
+    await waitFor(() => {
+      const driving = screen.getAllByText(/^\d+ min$/).map((node) => node.props.children);
+      expect(driving).not.toEqual(walking);
+    });
+    queryClient.clear();
+  });
+});

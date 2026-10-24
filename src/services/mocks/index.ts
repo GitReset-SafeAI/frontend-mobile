@@ -50,6 +50,7 @@ export const mockServices: AppServices = {
         request.destination,
         hotspots,
         hotspots.length === 0 ? 'insufficient' : demoHotspots.evidenceLevel,
+        request.travelMode,
       );
     },
   },

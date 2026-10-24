@@ -55,6 +55,7 @@ describe('safety map contract', () => {
       origin: { latitude: 6.8872, longitude: 79.8597 },
       destination: { latitude: 6.8951, longitude: 79.8541 },
       timePeriod: 'night',
+      travelMode: 'walking',
     });
 
     const fastest = result.routes.find((route) => route.role === 'fastest');
@@ -73,6 +74,7 @@ describe('safety map contract', () => {
       origin: { latitude: 6.8872, longitude: 79.8597 },
       destination: { latitude: 6.8951, longitude: 79.8541 },
       timePeriod: 'all',
+      travelMode: 'walking',
     });
 
     if (result.recommendedRouteId === null) return;

@@ -41,7 +41,9 @@
     "noResults": "No matching place found. You can also tap the map.",
     "clearField": "Clear {{field}}",
     "myLocation": "My location",
-    "hint": "Tap a marked area on the map to see what was reported there."
+    "hint": "Tap a marked area on the map to see what was reported there.",
+    "walking": "Walk",
+    "driving": "Drive"
   },
   "evidence": {
     "insufficient": "Not enough reports to show a pattern",
@@ -71,7 +73,7 @@
     }
   },
   "routes": {
-    "title": "Compare routes",
+    "title": "Route options",
     "recommended": "Suggested",
     "role": {
       "fastest": "Fastest route",
@@ -84,11 +86,13 @@
     "hotspotsPassed_one": "Passes {{count}} reported area",
     "hotspotsPassed_other": "Passes {{count}} reported areas",
     "noReportedIssues": "No reported issues along this route",
-    "noAlternativeTitle": "No lower-exposure route found",
-    "noAlternativeDescription": "No reasonable alternative avoided more reported areas, so only the fastest route is shown.",
+    "noAlternativeTitle": "No clearly better route",
+    "noAlternativeDescription": "No alternative avoided enough reported areas to be worth the extra time. The option with the fewest is marked below.",
     "loadFailed": "Routes could not be compared. Please try again.",
     "disclaimer": "Route comparisons are estimates based on reported incidents. No route is guaranteed to be safe. Use your own judgement.",
-    "approximateGeometry": "These paths are approximate. The routing service could not be reached, so they do not follow real streets."
+    "approximateGeometry": "These paths are approximate. The routing service could not be reached, so they do not follow real streets.",
+    "lowestExposure": "Fewest reported areas of these",
+    "roadNetworkWalking": "Walking paths follow the road network: the routing service has no separate pedestrian profile. Check crossings and footpaths yourself."
   },
   "timePeriod": {
     "label": "Time of day",

@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Button, Card, IconButton, Text } from 'react-native-paper';
+import { Button, Card, IconButton, SegmentedButtons, Text } from 'react-native-paper';
 
-import type { PlaceSuggestion } from '../../../services/contracts';
+import type { PlaceSuggestion, TravelMode } from '../../../services/contracts';
 import { tokens } from '../../../shared/theme/tokens';
 import { PlaceSearchField } from './PlaceSearchField';
 
@@ -18,6 +18,8 @@ interface JourneyPlannerProps {
   destination: PlannerPoint | null;
   isLocating: boolean;
   isComparing: boolean;
+  travelMode: TravelMode;
+  onSelectTravelMode: (mode: TravelMode) => void;
   onSelectPlace: (target: PlannerTarget, place: PlaceSuggestion) => void;
   onClearPoint: (target: PlannerTarget) => void;
   onUseCurrentLocation: () => void;
@@ -30,6 +32,8 @@ export function JourneyPlanner({
   destination,
   isLocating,
   isComparing,
+  travelMode,
+  onSelectTravelMode,
   onSelectPlace,
   onClearPoint,
   onUseCurrentLocation,
@@ -76,6 +80,16 @@ export function JourneyPlanner({
             {t('planner.useMyLocation')}
           </Button>
         </View>
+
+        <SegmentedButtons
+          value={travelMode}
+          onValueChange={(mode) => onSelectTravelMode(mode as TravelMode)}
+          density="small"
+          buttons={[
+            { value: 'walking', label: t('planner.walking'), icon: 'walk' },
+            { value: 'driving', label: t('planner.driving'), icon: 'car' },
+          ]}
+        />
 
         <Text variant="bodySmall" style={styles.hint}>{t('planner.hint')}</Text>
 

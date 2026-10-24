@@ -4,6 +4,7 @@ import type {
   Route,
   RouteComparisonResult,
   RouteRole,
+  TravelMode,
 } from '../../contracts';
 
 // Builds synthetic walking routes between any two points so the map can be
@@ -12,6 +13,9 @@ import type {
 // walking directions.
 
 const EARTH_RADIUS_M = 6_371_000;
+
+// ~1.35 m/s on foot, ~8.3 m/s (30 km/h) in city traffic.
+const SPEED_MPS: Record<TravelMode, number> = { walking: 1.35, driving: 8.3 };
 
 export function distanceMeters(a: Coordinate, b: Coordinate) {
   const toRad = (value: number) => (value * Math.PI) / 180;
@@ -61,6 +65,7 @@ function buildRoute(
   destination: Coordinate,
   bend: number,
   hotspots: Hotspot[],
+  travelMode: TravelMode,
 ): Omit<Route, 'extraDurationSeconds'> {
   const geometry = buildGeometry(origin, destination, bend);
   const distance = pathLengthMeters(geometry);
@@ -79,8 +84,7 @@ function buildRoute(
   return {
     id,
     role,
-    // ~1.35 m/s walking pace.
-    durationSeconds: Math.round(distance / 1.35),
+    durationSeconds: Math.round(distance / SPEED_MPS[travelMode]),
     distanceMeters: Math.round(distance),
     geometry,
     exposureScore: exposure,
@@ -99,11 +103,16 @@ export function buildSyntheticComparison(
   destination: Coordinate,
   hotspots: Hotspot[],
   evidenceLevel: RouteComparisonResult['evidenceLevel'],
+  travelMode: TravelMode = 'walking',
 ): RouteComparisonResult {
   const candidates = [
-    buildRoute('mock-route-fastest', 'fastest', origin, destination, 0, hotspots),
-    buildRoute('mock-route-lower-exposure', 'lower-exposure', origin, destination, 0.22, hotspots),
-    buildRoute('mock-route-alternative', 'alternative', origin, destination, -0.3, hotspots),
+    buildRoute('mock-route-fastest', 'fastest', origin, destination, 0, hotspots, travelMode),
+    buildRoute(
+      'mock-route-lower-exposure', 'lower-exposure', origin, destination, 0.22, hotspots, travelMode,
+    ),
+    buildRoute(
+      'mock-route-alternative', 'alternative', origin, destination, -0.3, hotspots, travelMode,
+    ),
   ];
 
   const fastest = candidates[0];
@@ -128,11 +137,20 @@ export function buildSyntheticComparison(
         )
         .sort((a, b) => a.exposureScore - b.exposureScore)[0];
 
+  // The least-exposed option is always named, even when it is not worth a
+  // detour, so the caller is never left with only "nothing qualified".
+  const leastExposed = [...routes].sort(
+    (a, b) => a.exposureScore - b.exposureScore || a.durationSeconds - b.durationSeconds,
+  )[0];
+
   return {
     routes,
     recommendedRouteId: best?.id ?? null,
+    lowestExposureRouteId: leastExposed?.id ?? null,
     evidenceLevel,
+    travelMode,
     // Mock geometry is a drawn line, never the street network.
     usesStreetNetwork: false,
+    pedestrianProfileAvailable: false,
   };
 }

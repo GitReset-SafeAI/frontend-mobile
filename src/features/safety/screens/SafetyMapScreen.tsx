@@ -8,6 +8,7 @@ import type {
   HotspotsRequest,
   PlaceSuggestion,
   TimePeriodFilter,
+  TravelMode,
 } from '../../../services/contracts';
 import { LanguageSwitcher } from '../../../shared/components/LanguageSwitcher';
 import { useCurrentLocation } from '../../../shared/hooks/useCurrentLocation';
@@ -42,6 +43,7 @@ export function SafetyMapScreen() {
   const [destination, setDestination] = useState<PlannerPoint | null>(null);
   const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(null);
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
+  const [travelMode, setTravelMode] = useState<TravelMode>('walking');
 
   const request = useMemo<HotspotsRequest>(
     () => ({ bounds: defaultBounds, timePeriod }),
@@ -80,10 +82,15 @@ export function SafetyMapScreen() {
   const handleCompare = useCallback(() => {
     if (!origin || !destination) return;
     comparison.mutate(
-      { origin: origin.coordinate, destination: destination.coordinate, timePeriod },
+      {
+        origin: origin.coordinate,
+        destination: destination.coordinate,
+        timePeriod,
+        travelMode,
+      },
       { onSuccess: (result) => setSelectedRouteId(result.recommendedRouteId ?? result.routes[0].id) },
     );
-  }, [comparison, destination, origin, timePeriod]);
+  }, [comparison, destination, origin, timePeriod, travelMode]);
 
   const handleSwap = useCallback(() => {
     setOrigin(destination);
@@ -110,6 +117,8 @@ export function SafetyMapScreen() {
       <JourneyPlanner
         origin={origin}
         destination={destination}
+        travelMode={travelMode}
+        onSelectTravelMode={setTravelMode}
         isLocating={location.status === 'loading'}
         isComparing={comparison.isPending}
         onSelectPlace={handleSelectPlace}

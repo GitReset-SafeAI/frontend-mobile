@@ -60,6 +60,7 @@ export const apiServices: AppServices = {
           origin: request.origin,
           destination: request.destination,
           time_period: request.timePeriod,
+          travel_mode: request.travelMode,
         }),
       });
     },

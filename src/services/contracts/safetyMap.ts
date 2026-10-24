@@ -105,8 +105,10 @@ export interface HotspotsRequest {
 // so it can be added without changing the hotspot surface.
 
 export const routeRoleSchema = z.enum(['fastest', 'lower-exposure', 'alternative']);
+export const travelModeSchema = z.enum(['walking', 'driving']);
 
 export type RouteRole = z.infer<typeof routeRoleSchema>;
+export type TravelMode = z.infer<typeof travelModeSchema>;
 
 const routeWireSchema = z.object({
   id: z.string().min(1),
@@ -147,16 +149,26 @@ export const routeComparisonResultSchema = z
     // Null when no route meaningfully lowers exposure within an acceptable
     // detour. Recommending nothing is a valid, honest answer.
     recommended_route_id: z.string().min(1).nullable(),
+    // Always set when any route was found: the least-exposed option, named
+    // even when it does not clear the bar for a recommendation.
+    lowest_exposure_route_id: z.string().min(1).nullable(),
     evidence_level: evidenceLevelSchema,
+    travel_mode: travelModeSchema,
     // False when the routing service could not be reached and the geometry is
     // a straight-line approximation rather than real walking directions.
     uses_street_network: z.boolean(),
+    // The routing service has only a car profile, so a walking path follows
+    // the road network. Said plainly rather than implied away.
+    pedestrian_profile_available: z.boolean(),
   })
   .transform((result) => ({
     routes: result.routes,
     recommendedRouteId: result.recommended_route_id,
+    lowestExposureRouteId: result.lowest_exposure_route_id,
     evidenceLevel: result.evidence_level,
+    travelMode: result.travel_mode,
     usesStreetNetwork: result.uses_street_network,
+    pedestrianProfileAvailable: result.pedestrian_profile_available,
   }));
 
 export type RouteComparisonResult = z.infer<typeof routeComparisonResultSchema>;
@@ -165,6 +177,7 @@ export interface RouteComparisonRequest {
   origin: Coordinate;
   destination: Coordinate;
   timePeriod: TimePeriodFilter;
+  travelMode: TravelMode;
 }
 
 export interface SafetyMapService {
