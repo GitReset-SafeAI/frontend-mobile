@@ -65,9 +65,16 @@ function buildRoute(
   const geometry = buildGeometry(origin, destination, bend);
   const distance = pathLengthMeters(geometry);
   const passed = hotspotsOnPath(geometry, hotspots);
+  // Confidence weights the contribution: an area the AI was unsure about
+  // pushes a route down less than one it understood clearly.
   const exposure = Math.min(
     100,
-    Math.round(passed.reduce((total, hotspot) => total + hotspot.intensity * 45, 0)),
+    Math.round(
+      passed.reduce(
+        (total, hotspot) => total + hotspot.intensity * hotspot.meanConfidence * 45,
+        0,
+      ),
+    ),
   );
   return {
     id,

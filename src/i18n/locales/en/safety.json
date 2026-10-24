@@ -20,7 +20,12 @@
     "disclaimer": "These areas show where incidents were reported, not where harassment actually occurs. Reporting is uneven, so busy areas may show more reports.",
     "loading": "Loading reported areas",
     "loadFailed": "Reported areas could not be loaded. Please try again.",
-    "close": "Close"
+    "close": "Close",
+    "confidence": {
+      "high": "The AI read these reports clearly",
+      "moderate": "The AI was moderately sure of these reports",
+      "low": "The AI was unsure of these reports, so this area counts for less"
+    }
   },
   "planner": {
     "title": "Plan a walking journey",

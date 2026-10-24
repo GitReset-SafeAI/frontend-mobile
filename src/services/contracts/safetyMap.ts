@@ -40,6 +40,9 @@ const hotspotWireSchema = z.object({
   top_safety_concerns: z.array(safetyConcernSchema).max(3),
   peak_time_bucket: timeBucketSchema.nullable(),
   most_recent_report_days_ago: z.number().int().min(0),
+  // Mean AI confidence across the reports behind this area. Reports marked
+  // needs_review are excluded upstream and never reach here.
+  mean_confidence: z.number().min(0).max(1),
   evidence_level: evidenceLevelSchema,
 });
 
@@ -53,6 +56,7 @@ export const hotspotSchema = hotspotWireSchema.transform((hotspot) => ({
   topSafetyConcerns: hotspot.top_safety_concerns,
   peakTimeBucket: hotspot.peak_time_bucket,
   mostRecentReportDaysAgo: hotspot.most_recent_report_days_ago,
+  meanConfidence: hotspot.mean_confidence,
   evidenceLevel: hotspot.evidence_level,
 }));
 

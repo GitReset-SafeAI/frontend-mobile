@@ -96,3 +96,11 @@ export function hotspotFill(intensity: number) {
 export function hotspotMarkerColor(hotspot: Hotspot) {
   return hotspotIssues(hotspot)[0]?.color ?? tokens.colors.status.unknown;
 }
+
+// Reported as a band, not a percentage: a mean of AI confidence scores does not
+// justify two-decimal precision in the interface.
+export function confidenceLabelKey(meanConfidence: number) {
+  if (meanConfidence >= 0.75) return 'map.confidence.high';
+  if (meanConfidence >= 0.5) return 'map.confidence.moderate';
+  return 'map.confidence.low';
+}

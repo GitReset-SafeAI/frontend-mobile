@@ -25,6 +25,7 @@ const demoHotspotsWire = {
       top_safety_concerns: [],
       peak_time_bucket: 'evening',
       most_recent_report_days_ago: 2,
+      mean_confidence: 0.88,
       evidence_level: 'moderate',
     },
     {
@@ -37,6 +38,7 @@ const demoHotspotsWire = {
       top_safety_concerns: ['POOR_STREET_LIGHTING', 'ISOLATED_OR_DESERTED_ROAD'],
       peak_time_bucket: 'night',
       most_recent_report_days_ago: 4,
+      mean_confidence: 0.61,
       evidence_level: 'limited',
     },
     {
@@ -49,6 +51,7 @@ const demoHotspotsWire = {
       top_safety_concerns: ['UNSAFE_BUS_STOP'],
       peak_time_bucket: 'day',
       most_recent_report_days_ago: 5,
+      mean_confidence: 0.79,
       evidence_level: 'moderate',
     },
     {
@@ -61,6 +64,7 @@ const demoHotspotsWire = {
       top_safety_concerns: [],
       peak_time_bucket: 'night',
       most_recent_report_days_ago: 11,
+      mean_confidence: 0.54,
       evidence_level: 'limited',
     },
     {
@@ -73,6 +77,7 @@ const demoHotspotsWire = {
       top_safety_concerns: ['POOR_STREET_LIGHTING'],
       peak_time_bucket: null,
       most_recent_report_days_ago: 24,
+      mean_confidence: 0.42,
       evidence_level: 'limited',
     },
   ],
