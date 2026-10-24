@@ -2,6 +2,7 @@ import { selectServices } from '../services';
 import { ApiError } from '../services/api/ApiError';
 import type { HotspotsRequest } from '../services/contracts';
 import { hotspotSchema } from '../services/contracts/safetyMap';
+import { buildSyntheticComparison } from '../services/mocks/fixtures/syntheticRoutes';
 import { queryKeys } from '../services/queryKeys';
 
 const colomboBounds: HotspotsRequest = {
@@ -90,6 +91,26 @@ describe('safety map contract', () => {
       most_recent_report_days_ago: 0, evidence_level: 'limited',
     };
     expect(hotspotSchema.safeParse(tooPrecise).success).toBe(false);
+  });
+
+  it('weights a low-confidence area less when scoring routes', () => {
+    const origin = { latitude: 6.89, longitude: 79.855 };
+    const destination = { latitude: 6.892, longitude: 79.857 };
+    const area = {
+      id: 'a', center: { latitude: 6.891, longitude: 79.856 }, radiusM: 400,
+      reportCount: 9, intensity: 0.8, topIncidentCategories: ['UNWANTED_FOLLOWING'],
+      topSafetyConcerns: [], peakTimeBucket: null, mostRecentReportDaysAgo: 1,
+      meanConfidence: 0.9, evidenceLevel: 'moderate' as const,
+    };
+
+    const confident = buildSyntheticComparison(origin, destination, [area], 'moderate');
+    const unsure = buildSyntheticComparison(
+      origin, destination, [{ ...area, meanConfidence: 0.3 }], 'moderate',
+    );
+
+    const score = (result: typeof confident) =>
+      result.routes.find((route) => route.role === 'fastest')!.exposureScore;
+    expect(score(unsure)).toBeLessThan(score(confident));
   });
 
   it('keeps query keys stable across small map pans', () => {

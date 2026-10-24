@@ -4,7 +4,7 @@ import { Button, Card, Chip, Text } from 'react-native-paper';
 
 import type { Hotspot } from '../../../services/contracts';
 import { tokens } from '../../../shared/theme/tokens';
-import { hotspotIssues } from '../constants/issueTypes';
+import { confidenceLabelKey, hotspotIssues } from '../constants/issueTypes';
 
 interface HotspotDetailCardProps {
   hotspot: Hotspot;
@@ -40,6 +40,9 @@ export function HotspotDetailCard({ hotspot, windowDays, onDismiss }: HotspotDet
         ) : null}
         <Text variant="bodyMedium" style={styles.muted}>
           {t(`evidence.${hotspot.evidenceLevel}`)}
+        </Text>
+        <Text variant="bodyMedium" style={styles.muted}>
+          {t(confidenceLabelKey(hotspot.meanConfidence))}
         </Text>
 
         {/* Stated on the detail view too; a single area must not read as fact. */}
