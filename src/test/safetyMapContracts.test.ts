@@ -60,7 +60,9 @@ describe('safety map contract', () => {
     expect(fastest).toBeDefined();
     expect(fastest?.extraDurationSeconds).toBe(0);
     for (const route of result.routes) {
-      expect(route.issueCategories.length).toBe(new Set(route.issueCategories).size);
+      // OTHER and UNCLEAR exist in both vocabularies, so the two stay apart.
+      expect(route.incidentCategories.length).toBe(new Set(route.incidentCategories).size);
+      expect(route.safetyConcerns.length).toBe(new Set(route.safetyConcerns).size);
       expect(route.geometry.length).toBeGreaterThanOrEqual(2);
     }
   });

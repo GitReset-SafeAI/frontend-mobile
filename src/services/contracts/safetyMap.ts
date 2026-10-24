@@ -16,9 +16,12 @@ export const timeBucketFilterSchema = z.enum(['day', 'evening', 'night', 'all'])
 export type TimeBucket = z.infer<typeof timeBucketSchema>;
 export type TimeBucketFilter = z.infer<typeof timeBucketFilterSchema>;
 
-// Categories are owned by the incident-AI module and may grow. Accept any
-// string so an added category cannot break the map.
+// Category vocabularies are owned by the incident-AI module
+// (`incident_ai_analyses.IncidentCategory` and `SafetyConcernCategory`). They
+// are kept as separate fields because OTHER and UNCLEAR appear in both. Accept
+// any string so an added category cannot break the map.
 export const incidentCategorySchema = z.string().min(1);
+export const safetyConcernSchema = z.string().min(1);
 
 // How well the underlying reports support what is shown. A hotspot is never
 // presented as objective danger, and absence of reports is never safety.
@@ -33,7 +36,8 @@ const hotspotWireSchema = z.object({
   radius_m: z.number().min(150),
   report_count: z.number().int().min(3),
   intensity: z.number().min(0).max(1),
-  top_categories: z.array(incidentCategorySchema).max(3),
+  top_incident_categories: z.array(incidentCategorySchema).max(3),
+  top_safety_concerns: z.array(safetyConcernSchema).max(3),
   peak_time_bucket: timeBucketSchema.nullable(),
   most_recent_report_days_ago: z.number().int().min(0),
   evidence_level: evidenceLevelSchema,
@@ -45,7 +49,8 @@ export const hotspotSchema = hotspotWireSchema.transform((hotspot) => ({
   radiusM: hotspot.radius_m,
   reportCount: hotspot.report_count,
   intensity: hotspot.intensity,
-  topCategories: hotspot.top_categories,
+  topIncidentCategories: hotspot.top_incident_categories,
+  topSafetyConcerns: hotspot.top_safety_concerns,
   peakTimeBucket: hotspot.peak_time_bucket,
   mostRecentReportDaysAgo: hotspot.most_recent_report_days_ago,
   evidenceLevel: hotspot.evidence_level,
@@ -103,9 +108,10 @@ const routeWireSchema = z.object({
   // score and never a guarantee.
   exposure_score: z.number().min(0).max(100),
   hotspots_passed: z.number().int().min(0),
-  // What kinds of issue were reported along this path, so every route can be
-  // explained rather than only ranked.
-  issue_categories: z.array(incidentCategorySchema).max(4),
+  // What was reported along this path, so every route can be explained rather
+  // than only ranked.
+  incident_categories: z.array(incidentCategorySchema).max(3),
+  safety_concerns: z.array(safetyConcernSchema).max(3),
   // Relative to the fastest route; 0 for the fastest route itself.
   extra_duration_s: z.number().int().min(0),
 });
@@ -118,7 +124,8 @@ export const routeSchema = routeWireSchema.transform((route) => ({
   geometry: route.geometry,
   exposureScore: route.exposure_score,
   hotspotsPassed: route.hotspots_passed,
-  issueCategories: route.issue_categories,
+  incidentCategories: route.incident_categories,
+  safetyConcerns: route.safety_concerns,
   extraDurationSeconds: route.extra_duration_s,
 }));
 

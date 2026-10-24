@@ -78,7 +78,12 @@ function buildRoute(
     geometry,
     exposureScore: exposure,
     hotspotsPassed: passed.length,
-    issueCategories: [...new Set(passed.flatMap((hotspot) => hotspot.topCategories))].slice(0, 4),
+    incidentCategories: [
+      ...new Set(passed.flatMap((hotspot) => hotspot.topIncidentCategories)),
+    ].slice(0, 3),
+    safetyConcerns: [
+      ...new Set(passed.flatMap((hotspot) => hotspot.topSafetyConcerns)),
+    ].slice(0, 3),
   };
 }
 

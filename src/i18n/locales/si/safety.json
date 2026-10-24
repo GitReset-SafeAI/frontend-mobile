@@ -49,14 +49,26 @@
     "moderate": "මධ්‍යස්ථ වාර්තා ගණනක් මත පදනම්ව"
   },
   "issues": {
-    "unwanted_touching": "අනවසර ස්පර්ශ",
-    "verbal_harassment": "වාචික හිරිහැර",
-    "stalking": "පසුපස එළවීම",
-    "following": "කෙනෙකු පසුපස පැමිණීම",
-    "threatening_behaviour": "තර්ජනාත්මක හැසිරීම",
-    "low_light": "අඩු ආලෝකය",
-    "isolated_area": "පාළු ප්‍රදේශයක්",
-    "other": "වෙනත් වාර්තා වූ ගැටලුවක්"
+    "incident": {
+      "UNWANTED_FOLLOWING": "කෙනෙකු පසුපස පැමිණීම",
+      "VERBAL_SEXUAL_HARASSMENT": "වාචික ලිංගික හිරිහැර",
+      "UNWANTED_PHYSICAL_CONTACT": "අනවසර ශාරීරික ස්පර්ශ",
+      "THREATENING_BEHAVIOUR": "තර්ජනාත්මක හැසිරීම",
+      "UNCOMFORTABLE_STARING": "අපහසුතාවයට පත් කරන බැලීම",
+      "OTHER": "වෙනත් වාර්තා වූ සිදුවීමක්",
+      "UNCLEAR": "වාර්තාවෙන් පැහැදිලි නැත",
+      "UNKNOWN": "වෙනත් වාර්තා වූ සිදුවීමක්"
+    },
+    "concern": {
+      "POOR_STREET_LIGHTING": "වීදි ආලෝකය අඩුයි",
+      "ISOLATED_OR_DESERTED_ROAD": "පාළු හෝ හුදෙකලා මාර්ගයක්",
+      "UNSAFE_BUS_STOP": "බස් නැවතුම අනාරක්ෂිත බව දැනුණි",
+      "FEELING_UNSAFE_WITHOUT_CONFIRMED_INCIDENT": "සිදුවීමක් තහවුරු නොවී අනාරක්ෂිත බවක් දැනුණි",
+      "PREVIOUS_SAFETY_CONCERNS_AT_LOCATION": "මෙම ස්ථානයේ පෙර ආරක්ෂක ගැටලු",
+      "OTHER": "වෙනත් ආරක්ෂක ගැටලුවක්",
+      "UNCLEAR": "වාර්තාවෙන් පැහැදිලි නැත",
+      "UNKNOWN": "වෙනත් ආරක්ෂක ගැටලුවක්"
+    }
   },
   "routes": {
     "title": "ඇවිදීමේ මාර්ග සසඳන්න",
