@@ -29,17 +29,20 @@
   },
   "planner": {
     "title": "Plan a walking journey",
-    "hintOrigin": "Tap the map to set your starting point, or use your current location.",
-    "hintDestination": "Tap the map to set where you are going.",
+    "hintOrigin": "Search above, or tap the map to set your starting point.",
+    "hintDestination": "Search above, or tap the map to set where you are going.",
     "start": "Start",
     "end": "Destination",
-    "notSet": "Not set",
     "useMyLocation": "Use my location",
     "swap": "Swap",
-    "clear": "Clear",
     "compare": "Compare routes",
     "locationDenied": "Location permission was declined. You can still set your start point by tapping the map.",
-    "locationUnavailable": "Your location could not be determined. You can set your start point by tapping the map."
+    "locationUnavailable": "Your location could not be determined. You can set your start point by tapping the map.",
+    "searchPlaceholder": "Search for a place",
+    "searching": "Searching places",
+    "noResults": "No matching place found. You can also tap the map.",
+    "clearField": "Clear {{field}}",
+    "myLocation": "My location"
   },
   "timeBucket": {
     "label": "Time of day",

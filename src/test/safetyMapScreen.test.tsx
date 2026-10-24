@@ -11,6 +11,16 @@ async function tapMap(coordinate: { latitude: number; longitude: number }) {
   return fireEvent(screen.getByTestId('safety-map'), 'press', { nativeEvent: { coordinate } });
 }
 
+async function search(testID: string, query: string) {
+  await fireEvent(screen.getByTestId(testID), 'focus');
+  await fireEvent.changeText(screen.getByTestId(testID), query);
+}
+
+async function searchAndPick(testID: string, query: string, placeName: string) {
+  await search(testID, query);
+  await fireEvent.press(await screen.findByText(placeName, {}, { timeout: 3000 }));
+}
+
 describe('safety map screen', () => {
   beforeEach(async () => { await i18n.changeLanguage('en'); });
 
@@ -23,15 +33,12 @@ describe('safety map screen', () => {
     queryClient.clear();
   });
 
-  it('plans a journey from two map taps and explains every route', async () => {
+  it('plans a journey by searching for places and explains every route', async () => {
     const { queryClient } = await renderWithProviders(<SafetyMapScreen />);
     await screen.findByText('What these areas mean');
 
-    // Setting the start advances to the destination, as in a familiar map app.
-    expect(screen.getByText(/Tap the map to set your starting point/)).toBeTruthy();
-    await tapMap(start);
-    expect(await screen.findByText(/Tap the map to set where you are going/)).toBeTruthy();
-    await tapMap(end);
+    await searchAndPick('planner-origin', 'Bamba', 'Bambalapitiya Railway Station');
+    await searchAndPick('planner-destination', 'Majestic', 'Majestic City');
 
     await fireEvent.press(screen.getByText('Compare routes'));
 
@@ -43,17 +50,37 @@ describe('safety map screen', () => {
     queryClient.clear();
   });
 
-  it('clears a planned journey', async () => {
+  it('matches places by area as well as by name', async () => {
     const { queryClient } = await renderWithProviders(<SafetyMapScreen />);
     await screen.findByText('What these areas mean');
 
-    await tapMap(start);
-    expect(
-      await screen.findByText(`Start: ${start.latitude.toFixed(4)}, ${start.longitude.toFixed(4)}`),
-    ).toBeTruthy();
+    await search('planner-origin', 'Colombo 04');
 
-    await fireEvent.press(screen.getByText('Clear'));
-    await waitFor(() => expect(screen.getByText('Start: Not set')).toBeTruthy());
+    expect(await screen.findByText('Bambalapitiya Railway Station')).toBeTruthy();
+    queryClient.clear();
+  });
+
+  it('says so plainly when nothing matches, and still offers the map', async () => {
+    const { queryClient } = await renderWithProviders(<SafetyMapScreen />);
+    await screen.findByText('What these areas mean');
+
+    await search('planner-origin', 'zzzzzz');
+
+    expect(await screen.findByText(/No matching place found/)).toBeTruthy();
+    queryClient.clear();
+  });
+
+  it('still accepts map taps for places that are not listed', async () => {
+    const { queryClient } = await renderWithProviders(<SafetyMapScreen />);
+    await screen.findByText('What these areas mean');
+
+    expect(screen.getByText(/tap the map to set your starting point/i)).toBeTruthy();
+    await tapMap(start);
+    expect(await screen.findByText(/tap the map to set where you are going/i)).toBeTruthy();
+    await tapMap(end);
+
+    await fireEvent.press(screen.getByText('Compare routes'));
+    expect(await screen.findByText('Fastest route')).toBeTruthy();
     queryClient.clear();
   });
 
@@ -64,11 +91,9 @@ describe('safety map screen', () => {
     await fireEvent.press(screen.getByText('Use my location'));
 
     expect(await screen.findByText(/Location permission was declined/)).toBeTruthy();
-    // Tapping the map must still work after a denial.
-    await tapMap(start);
-    expect(
-      await screen.findByText(`Start: ${start.latitude.toFixed(4)}, ${start.longitude.toFixed(4)}`),
-    ).toBeTruthy();
+    // Searching must still work after a denial.
+    await searchAndPick('planner-origin', 'Fort', 'Colombo Fort Railway Station');
+    expect(await screen.findByText(/tap the map to set where you are going/i)).toBeTruthy();
     queryClient.clear();
   });
 });

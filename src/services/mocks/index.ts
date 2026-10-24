@@ -1,4 +1,5 @@
 import type { AppServices, HotspotsRequest, HotspotsResult } from '../contracts';
+import { searchDemoPlaces } from './fixtures/places';
 import { demoHotspots } from './fixtures/safetyMap';
 import { demoStatus } from './fixtures/status';
 import { buildSyntheticComparison } from './fixtures/syntheticRoutes';
@@ -22,6 +23,11 @@ function matchesTimeBucket(
 
 export const mockServices: AppServices = {
   status: { async getStatus() { return { ...demoStatus }; } },
+  places: {
+    async searchPlaces({ query, limit = 6 }) {
+      return searchDemoPlaces(query, limit);
+    },
+  },
   safetyMap: {
     async getHotspots(request) {
       // Mirrors the server filters so the map behaves the same in both modes.
