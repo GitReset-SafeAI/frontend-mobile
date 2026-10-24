@@ -99,6 +99,8 @@
     "evening": "Evening",
     "night": "Night",
     "late_night": "Late night",
-    "not_sure": "Time not given"
+    "not_sure": "Time not given",
+    "nowLabel": "{{period}} (now)",
+    "defaultedToNow": "Showing {{period}}, the current time. Choose another period to compare."
   }
 }

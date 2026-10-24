@@ -25,6 +25,7 @@ import { RouteComparisonCard } from '../components/RouteComparisonCard';
 import { SafetyMapCanvas } from '../components/SafetyMapCanvas';
 import { TimePeriodSelector } from '../components/TimePeriodSelector';
 import { useHotspots } from '../hooks/useHotspots';
+import { currentTimePeriod } from '../utils/currentTimePeriod';
 import { useRouteComparison } from '../hooks/useRouteComparison';
 
 // Western Sri Lanka overview. Not a user's or an incident's location.
@@ -35,7 +36,9 @@ const defaultBounds: HotspotsRequest['bounds'] = {
 
 export function SafetyMapScreen() {
   const { t } = useTranslation('safety');
-  const [timePeriod, setTimePeriod] = useState<TimePeriodFilter>('all');
+  // Defaults to the period you are actually travelling in; every other
+  // period, and "any time", stay one tap away.
+  const [timePeriod, setTimePeriod] = useState<TimePeriodFilter>(() => currentTimePeriod());
   const [origin, setOrigin] = useState<PlannerPoint | null>(null);
   const [destination, setDestination] = useState<PlannerPoint | null>(null);
   const [activeTarget, setActiveTarget] = useState<PlannerTarget>('origin');
@@ -103,6 +106,7 @@ export function SafetyMapScreen() {
     setDestination(origin);
   }, [destination, origin]);
 
+  const currentPeriod = useMemo(() => currentTimePeriod(), []);
   const hotspots = hotspotsQuery.data?.hotspots ?? [];
   const routes = comparison.data?.routes ?? [];
 
@@ -183,7 +187,11 @@ export function SafetyMapScreen() {
         />
       ) : null}
 
-      <TimePeriodSelector value={timePeriod} onChange={setTimePeriod} />
+      <TimePeriodSelector
+        value={timePeriod}
+        currentPeriod={currentPeriod}
+        onChange={setTimePeriod}
+      />
 
       {hotspotsQuery.isPending ? (
         <ActivityIndicator accessibilityLabel={t('map.loading')} />

@@ -7,6 +7,9 @@ import { tokens } from '../../../shared/theme/tokens';
 
 interface TimePeriodSelectorProps {
   value: TimePeriodFilter;
+  // The period the device clock is in, marked so the default is not mistaken
+  // for an arbitrary choice.
+  currentPeriod: TimePeriodFilter;
   onChange: (value: TimePeriodFilter) => void;
 }
 
@@ -16,11 +19,14 @@ const periods: TimePeriodFilter[] = [
   'all', 'morning', 'afternoon', 'evening', 'night', 'late_night', 'not_sure',
 ];
 
-export function TimePeriodSelector({ value, onChange }: TimePeriodSelectorProps) {
+export function TimePeriodSelector({ value, currentPeriod, onChange }: TimePeriodSelectorProps) {
   const { t } = useTranslation('safety');
   return (
     <View style={styles.container}>
       <Text variant="labelLarge" style={styles.label}>{t('timePeriod.label')}</Text>
+      <Text variant="bodySmall" style={styles.hint}>
+        {t('timePeriod.defaultedToNow', { period: t(`timePeriod.${currentPeriod}`) })}
+      </Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
         {periods.map((period) => (
           <Chip
@@ -31,7 +37,9 @@ export function TimePeriodSelector({ value, onChange }: TimePeriodSelectorProps)
             accessibilityState={{ selected: value === period }}
             style={value === period ? styles.selected : undefined}
           >
-            {t(`timePeriod.${period}`)}
+            {period === currentPeriod
+              ? t('timePeriod.nowLabel', { period: t(`timePeriod.${period}`) })
+              : t(`timePeriod.${period}`)}
           </Chip>
         ))}
       </ScrollView>
@@ -42,6 +50,7 @@ export function TimePeriodSelector({ value, onChange }: TimePeriodSelectorProps)
 const styles = StyleSheet.create({
   container: { gap: tokens.spacing.sm },
   label: { color: tokens.colors.textPrimary },
+  hint: { color: tokens.colors.textSecondary },
   row: { gap: tokens.spacing.xs, paddingRight: tokens.spacing.md },
   selected: { backgroundColor: tokens.colors.lightTint },
 });
