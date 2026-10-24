@@ -1,28 +1,30 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Button, Card, Icon, SegmentedButtons, Text } from 'react-native-paper';
+import { Button, Card, IconButton, Text } from 'react-native-paper';
 
-import type { Coordinate } from '../../../services/contracts';
+import type { PlaceSuggestion } from '../../../services/contracts';
 import { tokens } from '../../../shared/theme/tokens';
+import { PlaceSearchField } from './PlaceSearchField';
 
 export type PlannerTarget = 'origin' | 'destination';
 
+export interface PlannerPoint {
+  label: string;
+  coordinate: { latitude: number; longitude: number };
+}
+
 interface JourneyPlannerProps {
-  origin: Coordinate | null;
-  destination: Coordinate | null;
+  origin: PlannerPoint | null;
+  destination: PlannerPoint | null;
   activeTarget: PlannerTarget;
   isLocating: boolean;
   isComparing: boolean;
   onSelectTarget: (target: PlannerTarget) => void;
+  onSelectPlace: (target: PlannerTarget, place: PlaceSuggestion) => void;
+  onClearPoint: (target: PlannerTarget) => void;
   onUseCurrentLocation: () => void;
   onSwap: () => void;
-  onClear: () => void;
   onCompare: () => void;
-}
-
-function formatPoint(point: Coordinate | null, fallback: string) {
-  if (!point) return fallback;
-  return `${point.latitude.toFixed(4)}, ${point.longitude.toFixed(4)}`;
 }
 
 export function JourneyPlanner({
@@ -32,9 +34,10 @@ export function JourneyPlanner({
   isLocating,
   isComparing,
   onSelectTarget,
+  onSelectPlace,
+  onClearPoint,
   onUseCurrentLocation,
   onSwap,
-  onClear,
   onCompare,
 }: JourneyPlannerProps) {
   const { t } = useTranslation('safety');
@@ -43,43 +46,48 @@ export function JourneyPlanner({
     <Card mode="outlined" style={styles.card}>
       <Card.Title title={t('planner.title')} titleNumberOfLines={2} />
       <Card.Content style={styles.content}>
-        <Text variant="bodyMedium" style={styles.hint}>
-          {t(activeTarget === 'origin' ? 'planner.hintOrigin' : 'planner.hintDestination')}
-        </Text>
-
-        <SegmentedButtons
-          value={activeTarget}
-          onValueChange={(value) => onSelectTarget(value as PlannerTarget)}
-          buttons={[
-            { value: 'origin', label: t('planner.start'), icon: 'map-marker-outline' },
-            { value: 'destination', label: t('planner.end'), icon: 'flag-checkered' },
-          ]}
-        />
-
-        <View style={styles.row}>
-          <Icon source="map-marker-outline" size={20} color={tokens.colors.status.info} />
-          <Text variant="bodyMedium" style={styles.value}>
-            {`${t('planner.start')}: ${formatPoint(origin, t('planner.notSet'))}`}
-          </Text>
-        </View>
-        <View style={styles.row}>
-          <Icon source="flag-checkered" size={20} color={tokens.colors.primaryDark} />
-          <Text variant="bodyMedium" style={styles.value}>
-            {`${t('planner.end')}: ${formatPoint(destination, t('planner.notSet'))}`}
-          </Text>
+        <View style={styles.fields}>
+          <View style={styles.inputs}>
+            <PlaceSearchField
+              label={t('planner.start')}
+              icon="circle-outline"
+              testID="planner-origin"
+              value={origin?.label ?? ''}
+              placeholder={t('planner.searchPlaceholder')}
+              onFocus={() => onSelectTarget('origin')}
+              onSelect={(place) => onSelectPlace('origin', place)}
+              onClear={() => onClearPoint('origin')}
+            />
+            <PlaceSearchField
+              label={t('planner.end')}
+              icon="map-marker"
+              testID="planner-destination"
+              value={destination?.label ?? ''}
+              placeholder={t('planner.searchPlaceholder')}
+              onFocus={() => onSelectTarget('destination')}
+              onSelect={(place) => onSelectPlace('destination', place)}
+              onClear={() => onClearPoint('destination')}
+            />
+          </View>
+          <IconButton
+            icon="swap-vertical"
+            accessibilityLabel={t('planner.swap')}
+            disabled={!origin && !destination}
+            onPress={onSwap}
+          />
         </View>
 
         <View style={styles.actions}>
           <Button mode="text" icon="crosshairs-gps" loading={isLocating} onPress={onUseCurrentLocation}>
             {t('planner.useMyLocation')}
           </Button>
-          <Button mode="text" icon="swap-vertical" onPress={onSwap} disabled={!origin || !destination}>
-            {t('planner.swap')}
-          </Button>
-          <Button mode="text" icon="close" onPress={onClear} disabled={!origin && !destination}>
-            {t('planner.clear')}
-          </Button>
         </View>
+
+        {/* Tapping the map stays available for places that are not listed, and
+            for anyone who would rather point than type. */}
+        <Text variant="bodySmall" style={styles.hint}>
+          {t(activeTarget === 'origin' ? 'planner.hintOrigin' : 'planner.hintDestination')}
+        </Text>
 
         <Button
           mode="contained"
@@ -97,9 +105,9 @@ export function JourneyPlanner({
 
 const styles = StyleSheet.create({
   card: { borderColor: tokens.colors.border },
-  content: { gap: tokens.spacing.md },
+  content: { gap: tokens.spacing.sm },
+  fields: { flexDirection: 'row', alignItems: 'center', gap: tokens.spacing.xs },
+  inputs: { flex: 1, gap: tokens.spacing.sm },
+  actions: { flexDirection: 'row', flexWrap: 'wrap' },
   hint: { color: tokens.colors.textSecondary },
-  row: { flexDirection: 'row', alignItems: 'center', gap: tokens.spacing.sm },
-  value: { flex: 1, color: tokens.colors.textPrimary },
-  actions: { flexDirection: 'row', flexWrap: 'wrap', gap: tokens.spacing.xs },
 });

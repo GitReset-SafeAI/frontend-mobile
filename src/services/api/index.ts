@@ -8,6 +8,13 @@ export const apiServices: AppServices = {
       throw new ApiError('not-implemented', 'The backend status contract has not been agreed.');
     },
   },
+  // Geocoding will be proxied by the backend so provider keys stay off the
+  // device; no endpoint exists yet.
+  places: {
+    async searchPlaces() {
+      throw new ApiError('not-implemented', 'The place search endpoint is not available yet.');
+    },
+  },
   // Schemas are provisional and the safety-map endpoints are not built yet.
   // Fail explicitly rather than falling back to synthetic data.
   safetyMap: {

@@ -7,6 +7,7 @@ import type {
   Coordinate,
   Hotspot,
   HotspotsRequest,
+  PlaceSuggestion,
   TimeBucketFilter,
 } from '../../../services/contracts';
 import { LanguageSwitcher } from '../../../shared/components/LanguageSwitcher';
@@ -14,7 +15,11 @@ import { useCurrentLocation } from '../../../shared/hooks/useCurrentLocation';
 import { ScreenContainer } from '../../../shared/layouts/ScreenContainer';
 import { tokens } from '../../../shared/theme/tokens';
 import { HotspotDetailCard } from '../components/HotspotDetailCard';
-import { JourneyPlanner, type PlannerTarget } from '../components/JourneyPlanner';
+import {
+  JourneyPlanner,
+  type PlannerPoint,
+  type PlannerTarget,
+} from '../components/JourneyPlanner';
 import { MapEvidenceNotice } from '../components/MapEvidenceNotice';
 import { RouteComparisonCard } from '../components/RouteComparisonCard';
 import { SafetyMapCanvas } from '../components/SafetyMapCanvas';
@@ -31,8 +36,8 @@ const defaultBounds: HotspotsRequest['bounds'] = {
 export function SafetyMapScreen() {
   const { t } = useTranslation('safety');
   const [timeBucket, setTimeBucket] = useState<TimeBucketFilter>('all');
-  const [origin, setOrigin] = useState<Coordinate | null>(null);
-  const [destination, setDestination] = useState<Coordinate | null>(null);
+  const [origin, setOrigin] = useState<PlannerPoint | null>(null);
+  const [destination, setDestination] = useState<PlannerPoint | null>(null);
   const [activeTarget, setActiveTarget] = useState<PlannerTarget>('origin');
   const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(null);
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
@@ -45,46 +50,53 @@ export function SafetyMapScreen() {
   const comparison = useRouteComparison();
   const location = useCurrentLocation();
 
+  const setPoint = useCallback((target: PlannerTarget, point: PlannerPoint) => {
+    if (target === 'origin') {
+      setOrigin(point);
+      // Match the familiar flow: setting a start moves you on to the end.
+      setActiveTarget('destination');
+    } else {
+      setDestination(point);
+    }
+  }, []);
+
   const handleMapPress = useCallback(
     (coordinate: Coordinate) => {
       setSelectedHotspot(null);
-      if (activeTarget === 'origin') {
-        setOrigin(coordinate);
-        // Match the familiar flow: setting a start moves you on to the end.
-        setActiveTarget('destination');
-      } else {
-        setDestination(coordinate);
-      }
+      setPoint(activeTarget, {
+        label: `${coordinate.latitude.toFixed(4)}, ${coordinate.longitude.toFixed(4)}`,
+        coordinate,
+      });
     },
-    [activeTarget],
+    [activeTarget, setPoint],
   );
+
+  const handleSelectPlace = useCallback(
+    (target: PlannerTarget, place: PlaceSuggestion) => {
+      setPoint(target, { label: place.name, coordinate: place.coordinate });
+    },
+    [setPoint],
+  );
+
+  const handleClearPoint = useCallback((target: PlannerTarget) => {
+    if (target === 'origin') setOrigin(null);
+    else setDestination(null);
+    setSelectedRouteId(null);
+  }, []);
 
   const handleUseCurrentLocation = useCallback(async () => {
     const coordinate = await location.request();
     if (!coordinate) return;
-    if (activeTarget === 'origin') {
-      setOrigin(coordinate);
-      setActiveTarget('destination');
-    } else {
-      setDestination(coordinate);
-    }
-  }, [activeTarget, location]);
+    setPoint(activeTarget, { label: t('planner.myLocation'), coordinate });
+  }, [activeTarget, location, setPoint, t]);
 
   const handleCompare = useCallback(() => {
     if (!origin || !destination) return;
     comparison.mutate(
-      { origin, destination, timeBucket },
+      { origin: origin.coordinate, destination: destination.coordinate, timeBucket },
       { onSuccess: (result) => setSelectedRouteId(result.recommendedRouteId ?? result.routes[0].id) },
     );
   }, [comparison, destination, origin, timeBucket]);
-
-  const handleClear = useCallback(() => {
-    setOrigin(null);
-    setDestination(null);
-    setActiveTarget('origin');
-    setSelectedRouteId(null);
-    comparison.reset();
-  }, [comparison]);
 
   const handleSwap = useCallback(() => {
     setOrigin(destination);
@@ -107,48 +119,6 @@ export function SafetyMapScreen() {
       </View>
       <LanguageSwitcher />
 
-      <SafetyMapCanvas
-        hotspots={hotspots}
-        routes={routes}
-        selectedRouteId={selectedRouteId}
-        origin={origin}
-        destination={destination}
-        originLabel={t('planner.start')}
-        destinationLabel={t('planner.end')}
-        hotspotLabel={(hotspot) =>
-          t('map.reportCount', {
-            count: hotspot.reportCount,
-            days: hotspotsQuery.data?.windowDays ?? 30,
-          })
-        }
-        onMapPress={handleMapPress}
-        onHotspotPress={setSelectedHotspot}
-      />
-
-      <TimeBucketSelector value={timeBucket} onChange={setTimeBucket} />
-
-      {hotspotsQuery.isPending ? (
-        <ActivityIndicator accessibilityLabel={t('map.loading')} />
-      ) : null}
-
-      {hotspotsQuery.isError ? (
-        <Card mode="outlined" style={styles.errorCard}>
-          <Card.Content>
-            <Text variant="bodyLarge">{t('map.loadFailed')}</Text>
-          </Card.Content>
-        </Card>
-      ) : null}
-
-      {hotspotsQuery.data ? <MapEvidenceNotice result={hotspotsQuery.data} /> : null}
-
-      {selectedHotspot ? (
-        <HotspotDetailCard
-          hotspot={selectedHotspot}
-          windowDays={hotspotsQuery.data?.windowDays ?? 30}
-          onDismiss={() => setSelectedHotspot(null)}
-        />
-      ) : null}
-
       <JourneyPlanner
         origin={origin}
         destination={destination}
@@ -156,9 +126,10 @@ export function SafetyMapScreen() {
         isLocating={location.status === 'loading'}
         isComparing={comparison.isPending}
         onSelectTarget={setActiveTarget}
+        onSelectPlace={handleSelectPlace}
+        onClearPoint={handleClearPoint}
         onUseCurrentLocation={handleUseCurrentLocation}
         onSwap={handleSwap}
-        onClear={handleClear}
         onCompare={handleCompare}
       />
 
@@ -168,6 +139,25 @@ export function SafetyMapScreen() {
       {location.status === 'unavailable' ? (
         <Text variant="bodyMedium" style={styles.muted}>{t('planner.locationUnavailable')}</Text>
       ) : null}
+
+      <SafetyMapCanvas
+        hotspots={hotspots}
+        routes={routes}
+        selectedRouteId={selectedRouteId}
+        origin={origin?.coordinate ?? null}
+        destination={destination?.coordinate ?? null}
+        originLabel={origin?.label ?? t('planner.start')}
+        destinationLabel={destination?.label ?? t('planner.end')}
+        hotspotLabel={(hotspot) =>
+          t('map.reportCount', {
+            count: hotspot.reportCount,
+            days: hotspotsQuery.data?.windowDays ?? 30,
+          })
+        }
+        onMapPress={handleMapPress}
+        onHotspotPress={setSelectedHotspot}
+        onRoutePress={setSelectedRouteId}
+      />
 
       {comparison.isError ? (
         <Card mode="outlined" style={styles.errorCard}>
@@ -184,6 +174,30 @@ export function SafetyMapScreen() {
           onSelectRoute={setSelectedRouteId}
         />
       ) : null}
+
+      {selectedHotspot ? (
+        <HotspotDetailCard
+          hotspot={selectedHotspot}
+          windowDays={hotspotsQuery.data?.windowDays ?? 30}
+          onDismiss={() => setSelectedHotspot(null)}
+        />
+      ) : null}
+
+      <TimeBucketSelector value={timeBucket} onChange={setTimeBucket} />
+
+      {hotspotsQuery.isPending ? (
+        <ActivityIndicator accessibilityLabel={t('map.loading')} />
+      ) : null}
+
+      {hotspotsQuery.isError ? (
+        <Card mode="outlined" style={styles.errorCard}>
+          <Card.Content>
+            <Text variant="bodyLarge">{t('map.loadFailed')}</Text>
+          </Card.Content>
+        </Card>
+      ) : null}
+
+      {hotspotsQuery.data ? <MapEvidenceNotice result={hotspotsQuery.data} /> : null}
 
       <Card mode="outlined" style={styles.card}>
         <Card.Title title={t('estimateTitle')} titleNumberOfLines={3} />
