@@ -143,10 +143,20 @@ export function buildSyntheticComparison(
     (a, b) => a.exposureScore - b.exposureScore || a.durationSeconds - b.durationSeconds,
   )[0];
 
+  // A route through nothing at all, offered without a time limit.
+  const clear = routes
+    .filter((route) => route.hotspotsPassed === 0)
+    .sort((a, b) => a.durationSeconds - b.durationSeconds)[0];
+
   return {
-    routes,
+    routes: routes.map((route) =>
+      clear && route.id === clear.id && route.id !== fastest.id && route.id !== best?.id
+        ? { ...route, role: 'avoids-all' as const }
+        : route,
+    ),
     recommendedRouteId: best?.id ?? null,
     lowestExposureRouteId: leastExposed?.id ?? null,
+    clearRouteId: clear?.id ?? null,
     evidenceLevel,
     travelMode,
     // Mock geometry is a drawn line, never the street network.

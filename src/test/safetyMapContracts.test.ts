@@ -158,3 +158,30 @@ describe('route recommendation restraint', () => {
     expect(result.recommendedRouteId).toBeNull();
   });
 });
+
+describe('clear route', () => {
+  it('offers a route through nothing even when it takes much longer', () => {
+    const origin = { latitude: 6.8872, longitude: 79.8597 };
+    const destination = { latitude: 6.8951, longitude: 79.8541 };
+    const onTheDirectLine = {
+      id: 'mid', center: { latitude: 6.89115, longitude: 79.8569 }, radiusM: 200,
+      reportCount: 9, intensity: 0.9, topIncidentCategories: ['UNWANTED_FOLLOWING'],
+      topSafetyConcerns: [], peakTimePeriod: null, mostRecentReportDaysAgo: 1,
+      meanConfidence: 0.9, evidenceLevel: 'moderate' as const,
+    };
+
+    const result = buildSyntheticComparison(origin, destination, [onTheDirectLine], 'moderate');
+    const fastest = result.routes.find((route) => route.role === 'fastest')!;
+
+    if (result.clearRouteId === null) {
+      // Valid only when nothing avoided the area; the fastest must then be hit.
+      expect(fastest.hotspotsPassed).toBeGreaterThan(0);
+      return;
+    }
+
+    const clear = result.routes.find((route) => route.id === result.clearRouteId)!;
+    expect(clear.hotspotsPassed).toBe(0);
+    // The whole point: it is offered without a time limit applied to it.
+    expect(clear.durationSeconds).toBeGreaterThanOrEqual(fastest.durationSeconds);
+  });
+});

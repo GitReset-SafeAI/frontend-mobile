@@ -104,7 +104,9 @@ export interface HotspotsRequest {
 // Route comparison is out of the initial required scope. It is contracted here
 // so it can be added without changing the hotspot surface.
 
-export const routeRoleSchema = z.enum(['fastest', 'lower-exposure', 'alternative']);
+export const routeRoleSchema = z.enum([
+  'fastest', 'lower-exposure', 'alternative', 'avoids-all',
+]);
 export const travelModeSchema = z.enum(['walking', 'driving']);
 
 export type RouteRole = z.infer<typeof routeRoleSchema>;
@@ -152,6 +154,8 @@ export const routeComparisonResultSchema = z
     // Always set when any route was found: the least-exposed option, named
     // even when it does not clear the bar for a recommendation.
     lowest_exposure_route_id: z.string().min(1).nullable(),
+    // A route entering no reported area at all, offered however long it is.
+    clear_route_id: z.string().min(1).nullable(),
     evidence_level: evidenceLevelSchema,
     travel_mode: travelModeSchema,
     // False when the routing service could not be reached and the geometry is
@@ -165,6 +169,7 @@ export const routeComparisonResultSchema = z
     routes: result.routes,
     recommendedRouteId: result.recommended_route_id,
     lowestExposureRouteId: result.lowest_exposure_route_id,
+    clearRouteId: result.clear_route_id,
     evidenceLevel: result.evidence_level,
     travelMode: result.travel_mode,
     usesStreetNetwork: result.uses_street_network,
