@@ -55,6 +55,7 @@ describe('safety map contract', () => {
       origin: { latitude: 6.8872, longitude: 79.8597 },
       destination: { latitude: 6.8951, longitude: 79.8541 },
       timePeriod: 'night',
+      travelMode: 'walking',
     });
 
     const fastest = result.routes.find((route) => route.role === 'fastest');
@@ -73,6 +74,7 @@ describe('safety map contract', () => {
       origin: { latitude: 6.8872, longitude: 79.8597 },
       destination: { latitude: 6.8951, longitude: 79.8541 },
       timePeriod: 'all',
+      travelMode: 'walking',
     });
 
     if (result.recommendedRouteId === null) return;
@@ -134,5 +136,25 @@ describe('safety map contract', () => {
       } satisfies Partial<ApiError>);
       expect(fetchSpy).not.toHaveBeenCalled();
     } finally { fetchSpy.mockRestore(); }
+  });
+});
+
+describe('route recommendation restraint', () => {
+  it('recommends nothing when the fastest route already avoids everything', () => {
+    const origin = { latitude: 6.80, longitude: 79.80 };
+    const destination = { latitude: 6.81, longitude: 79.81 };
+    // A reported area nowhere near any candidate route.
+    const faraway = {
+      id: 'far', center: { latitude: 7.5, longitude: 80.5 }, radiusM: 200,
+      reportCount: 9, intensity: 0.9, topIncidentCategories: ['UNWANTED_FOLLOWING'],
+      topSafetyConcerns: [], peakTimePeriod: null, mostRecentReportDaysAgo: 1,
+      meanConfidence: 0.9, evidenceLevel: 'moderate' as const,
+    };
+
+    const result = buildSyntheticComparison(origin, destination, [faraway], 'limited');
+
+    expect(result.routes.every((route) => route.hotspotsPassed === 0)).toBe(true);
+    // Nothing to avoid means no detour is worth suggesting.
+    expect(result.recommendedRouteId).toBeNull();
   });
 });

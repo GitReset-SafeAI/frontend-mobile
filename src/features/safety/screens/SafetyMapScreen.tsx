@@ -4,11 +4,11 @@ import { StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Card, Icon, Text } from 'react-native-paper';
 
 import type {
-  Coordinate,
   Hotspot,
   HotspotsRequest,
   PlaceSuggestion,
   TimePeriodFilter,
+  TravelMode,
 } from '../../../services/contracts';
 import { LanguageSwitcher } from '../../../shared/components/LanguageSwitcher';
 import { useCurrentLocation } from '../../../shared/hooks/useCurrentLocation';
@@ -41,9 +41,9 @@ export function SafetyMapScreen() {
   const [timePeriod, setTimePeriod] = useState<TimePeriodFilter>(() => currentTimePeriod());
   const [origin, setOrigin] = useState<PlannerPoint | null>(null);
   const [destination, setDestination] = useState<PlannerPoint | null>(null);
-  const [activeTarget, setActiveTarget] = useState<PlannerTarget>('origin');
   const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(null);
   const [selectedRouteId, setSelectedRouteId] = useState<string | null>(null);
+  const [travelMode, setTravelMode] = useState<TravelMode>('walking');
 
   const request = useMemo<HotspotsRequest>(
     () => ({ bounds: defaultBounds, timePeriod }),
@@ -54,25 +54,9 @@ export function SafetyMapScreen() {
   const location = useCurrentLocation();
 
   const setPoint = useCallback((target: PlannerTarget, point: PlannerPoint) => {
-    if (target === 'origin') {
-      setOrigin(point);
-      // Match the familiar flow: setting a start moves you on to the end.
-      setActiveTarget('destination');
-    } else {
-      setDestination(point);
-    }
+    if (target === 'origin') setOrigin(point);
+    else setDestination(point);
   }, []);
-
-  const handleMapPress = useCallback(
-    (coordinate: Coordinate) => {
-      setSelectedHotspot(null);
-      setPoint(activeTarget, {
-        label: `${coordinate.latitude.toFixed(4)}, ${coordinate.longitude.toFixed(4)}`,
-        coordinate,
-      });
-    },
-    [activeTarget, setPoint],
-  );
 
   const handleSelectPlace = useCallback(
     (target: PlannerTarget, place: PlaceSuggestion) => {
@@ -87,19 +71,26 @@ export function SafetyMapScreen() {
     setSelectedRouteId(null);
   }, []);
 
+  // Always the starting point: that is what a current position is for, and
+  // there is no longer a selected field for it to land in.
   const handleUseCurrentLocation = useCallback(async () => {
     const coordinate = await location.request();
     if (!coordinate) return;
-    setPoint(activeTarget, { label: t('planner.myLocation'), coordinate });
-  }, [activeTarget, location, setPoint, t]);
+    setPoint('origin', { label: t('planner.myLocation'), coordinate });
+  }, [location, setPoint, t]);
 
   const handleCompare = useCallback(() => {
     if (!origin || !destination) return;
     comparison.mutate(
-      { origin: origin.coordinate, destination: destination.coordinate, timePeriod },
+      {
+        origin: origin.coordinate,
+        destination: destination.coordinate,
+        timePeriod,
+        travelMode,
+      },
       { onSuccess: (result) => setSelectedRouteId(result.recommendedRouteId ?? result.routes[0].id) },
     );
-  }, [comparison, destination, origin, timePeriod]);
+  }, [comparison, destination, origin, timePeriod, travelMode]);
 
   const handleSwap = useCallback(() => {
     setOrigin(destination);
@@ -126,10 +117,10 @@ export function SafetyMapScreen() {
       <JourneyPlanner
         origin={origin}
         destination={destination}
-        activeTarget={activeTarget}
+        travelMode={travelMode}
+        onSelectTravelMode={setTravelMode}
         isLocating={location.status === 'loading'}
         isComparing={comparison.isPending}
-        onSelectTarget={setActiveTarget}
         onSelectPlace={handleSelectPlace}
         onClearPoint={handleClearPoint}
         onUseCurrentLocation={handleUseCurrentLocation}
@@ -158,7 +149,11 @@ export function SafetyMapScreen() {
             days: hotspotsQuery.data?.windowDays ?? 30,
           })
         }
-        onMapPress={handleMapPress}
+        routeLabel={(route) =>
+          `${t(`routes.role.${route.role}`)} · ${t('routes.hotspotsPassed', {
+            count: route.hotspotsPassed,
+          })}`
+        }
         onHotspotPress={setSelectedHotspot}
         onRoutePress={setSelectedRouteId}
       />

@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Button, Card, IconButton, Text } from 'react-native-paper';
+import { Button, Card, IconButton, SegmentedButtons, Text } from 'react-native-paper';
 
-import type { PlaceSuggestion } from '../../../services/contracts';
+import type { PlaceSuggestion, TravelMode } from '../../../services/contracts';
 import { tokens } from '../../../shared/theme/tokens';
 import { PlaceSearchField } from './PlaceSearchField';
 
@@ -16,10 +16,10 @@ export interface PlannerPoint {
 interface JourneyPlannerProps {
   origin: PlannerPoint | null;
   destination: PlannerPoint | null;
-  activeTarget: PlannerTarget;
   isLocating: boolean;
   isComparing: boolean;
-  onSelectTarget: (target: PlannerTarget) => void;
+  travelMode: TravelMode;
+  onSelectTravelMode: (mode: TravelMode) => void;
   onSelectPlace: (target: PlannerTarget, place: PlaceSuggestion) => void;
   onClearPoint: (target: PlannerTarget) => void;
   onUseCurrentLocation: () => void;
@@ -30,10 +30,10 @@ interface JourneyPlannerProps {
 export function JourneyPlanner({
   origin,
   destination,
-  activeTarget,
   isLocating,
   isComparing,
-  onSelectTarget,
+  travelMode,
+  onSelectTravelMode,
   onSelectPlace,
   onClearPoint,
   onUseCurrentLocation,
@@ -54,7 +54,6 @@ export function JourneyPlanner({
               testID="planner-origin"
               value={origin?.label ?? ''}
               placeholder={t('planner.searchPlaceholder')}
-              onFocus={() => onSelectTarget('origin')}
               onSelect={(place) => onSelectPlace('origin', place)}
               onClear={() => onClearPoint('origin')}
             />
@@ -64,7 +63,6 @@ export function JourneyPlanner({
               testID="planner-destination"
               value={destination?.label ?? ''}
               placeholder={t('planner.searchPlaceholder')}
-              onFocus={() => onSelectTarget('destination')}
               onSelect={(place) => onSelectPlace('destination', place)}
               onClear={() => onClearPoint('destination')}
             />
@@ -83,11 +81,17 @@ export function JourneyPlanner({
           </Button>
         </View>
 
-        {/* Tapping the map stays available for places that are not listed, and
-            for anyone who would rather point than type. */}
-        <Text variant="bodySmall" style={styles.hint}>
-          {t(activeTarget === 'origin' ? 'planner.hintOrigin' : 'planner.hintDestination')}
-        </Text>
+        <SegmentedButtons
+          value={travelMode}
+          onValueChange={(mode) => onSelectTravelMode(mode as TravelMode)}
+          density="small"
+          buttons={[
+            { value: 'walking', label: t('planner.walking'), icon: 'walk' },
+            { value: 'driving', label: t('planner.driving'), icon: 'car' },
+          ]}
+        />
+
+        <Text variant="bodySmall" style={styles.hint}>{t('planner.hint')}</Text>
 
         <Button
           mode="contained"

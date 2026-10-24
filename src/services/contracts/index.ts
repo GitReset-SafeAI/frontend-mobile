@@ -18,6 +18,7 @@ export type {
   SafetyMapService,
   TimePeriod,
   TimePeriodFilter,
+  TravelMode,
 } from './safetyMap';
 
 export interface AppServices {

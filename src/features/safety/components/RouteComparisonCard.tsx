@@ -45,11 +45,27 @@ export function RouteComparisonCard({
             route={route}
             selected={route.id === selectedRouteId}
             recommended={route.id === comparison.recommendedRouteId}
+            // Marked even without a recommendation, so there is always a
+            // route to act on rather than only "nothing qualified".
+            lowestExposure={
+              comparison.recommendedRouteId === null &&
+              route.id === comparison.lowestExposureRouteId &&
+              comparison.routes.length > 1
+            }
             onPress={() => onSelectRoute(route.id)}
           />
         ))}
 
         {/* Say plainly when the geometry is not real walking directions. */}
+        {/* The routing service has no pedestrian profile, so a walking path
+            follows the road network. Said plainly. */}
+        {comparison.usesStreetNetwork && !comparison.pedestrianProfileAvailable
+        && comparison.travelMode === 'walking' ? (
+          <Text variant="bodyMedium" style={styles.disclaimer}>
+            {t('routes.roadNetworkWalking')}
+          </Text>
+        ) : null}
+
         {comparison.usesStreetNetwork ? null : (
           <Text variant="bodyMedium" style={styles.disclaimer}>
             {t('routes.approximateGeometry')}
@@ -68,10 +84,11 @@ interface RouteRowProps {
   route: Route;
   selected: boolean;
   recommended: boolean;
+  lowestExposure: boolean;
   onPress: () => void;
 }
 
-function RouteRow({ route, selected, recommended, onPress }: RouteRowProps) {
+function RouteRow({ route, selected, recommended, lowestExposure, onPress }: RouteRowProps) {
   const { t } = useTranslation('safety');
   const label = t(`routes.role.${route.role}`);
   const issues = routeIssues(route);
@@ -89,6 +106,9 @@ function RouteRow({ route, selected, recommended, onPress }: RouteRowProps) {
           <Text variant="labelLarge" style={styles.routeTitle}>{label}</Text>
           {/* The recommendation is stated in words, never by colour alone. */}
           {recommended ? <Chip compact icon="shield-check-outline">{t('routes.recommended')}</Chip> : null}
+          {lowestExposure ? (
+            <Chip compact icon="chart-line-variant">{t('routes.lowestExposure')}</Chip>
+          ) : null}
         </View>
 
         <Text variant="bodyMedium">
