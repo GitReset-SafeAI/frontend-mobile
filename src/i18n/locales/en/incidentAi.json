@@ -1,0 +1,41 @@
+{
+  "title": "How our AI read your report",
+  "estimateNote": "This is an automated estimate, not a verified fact. It may be wrong.",
+  "category": "Type of incident",
+  "severity": "Estimated seriousness",
+  "confidence": "AI confidence: {{level}}",
+  "picked": "Details it picked up",
+  "missing": "Not clear from your report",
+  "none": "Nothing specific",
+  "categories": {
+    "verbal_harassment": "Verbal harassment",
+    "following": "Being followed",
+    "physical_assault": "Physical assault or threat",
+    "theft": "Theft or snatching",
+    "unsafe_conditions": "Unsafe conditions (dark, isolated)",
+    "transport_issue": "Transport-related issue",
+    "other": "Other"
+  },
+  "severityLevels": {
+    "low": "Lower",
+    "moderate": "Moderate",
+    "high": "Higher",
+    "unknown": "Unknown"
+  },
+  "severityUnknown": "There isn't enough information to estimate seriousness. Unknown does not mean low.",
+  "confidenceLevels": {
+    "low": "low",
+    "medium": "medium",
+    "high": "high"
+  },
+  "detailKinds": {
+    "place": "Place",
+    "vehicle": "Vehicle",
+    "behaviour": "Behaviour"
+  },
+  "missingKinds": {
+    "time": "When it happened",
+    "location": "Where it happened",
+    "people": "Details about the people involved"
+  }
+}

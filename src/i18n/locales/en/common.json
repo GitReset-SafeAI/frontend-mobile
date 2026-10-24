@@ -1,5 +1,5 @@
 {
-  "appName": "SafeRoute AI",
+  "appName": "SafeStep",
   "tagline": "Personal safety, with care",
   "reportTab": "Report",
   "safetyTab": "Safety Map",
@@ -13,5 +13,25 @@
   "demoMode": "Demo mode · sample data",
   "demoAvailable": "The demo service is available. No report has been submitted.",
   "apiUnavailable": "API mode is selected. Backend operations are not connected yet.",
-  "serviceStatus": "Development status"
+  "serviceStatus": "Development status",
+  "homeTab": "Home",
+  "homeTabAccessibility": "Home tab",
+  "reportTabNew": "Report incident",
+  "reportTabNewAccessibility": "Report incident tab",
+  "safetyTabNew": "Safety map",
+  "safetyTabNewAccessibility": "Safety map tab",
+  "sosHeaderLabel": "SOS emergency help",
+  "switchToSinhala": "සිංහල",
+  "switchToSinhalaA11y": "Switch language to Sinhala",
+  "switchToEnglish": "English",
+  "switchToEnglishA11y": "Switch language to English",
+  "back": "Back",
+  "next": "Next",
+  "skip": "Skip",
+  "done": "Done",
+  "cancel": "Cancel",
+  "close": "Close",
+  "edit": "Edit",
+  "optional": "Optional",
+  "sampleData": "Sample data · demo mode"
 }

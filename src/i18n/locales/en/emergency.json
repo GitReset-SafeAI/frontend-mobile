@@ -1,0 +1,41 @@
+{
+  "homeCaption": "Tap for emergency help",
+  "homeHint": "Calls your emergency contact after a {{seconds}}-second countdown. You can cancel.",
+  "sosLabel": "SOS",
+  "sosA11yLabel": "SOS. Emergency help",
+  "sosA11yHint": "Starts a {{seconds}} second countdown, then calls your emergency contact. You can cancel.",
+  "countdownTitle": "Calling {{name}} in",
+  "secondsLabel_one": "second",
+  "secondsLabel_other": "seconds",
+  "announceStart": "Calling {{name}} in {{seconds}} seconds. Press Cancel to stop.",
+  "callNow": "Call now",
+  "cancel": "Cancel",
+  "disclaimer": "SafeStep does not alert anyone for you. This places a call from your phone to your emergency contact.",
+  "dialingTitle": "Opening your phone…",
+  "calledTitle": "Call started",
+  "calledBody": "If the call did not connect, try again.",
+  "callAgain": "Call {{name}} again",
+  "callContact": "Call {{name}}",
+  "close": "Close",
+  "failedTitle": "We couldn't open the phone",
+  "failedBody": "Please dial {{number}} on your phone now.",
+  "timeline": {
+    "title": "What happens when you tap",
+    "tap": "You tap SOS",
+    "wait": "A {{seconds}}-second countdown starts. You can cancel any time.",
+    "callNamed": "Your phone calls {{name}}",
+    "callGeneric": "Your phone calls your first emergency contact"
+  },
+  "contacts": {
+    "title": "Your emergency contacts",
+    "manage": "Manage contacts"
+  },
+  "none": {
+    "title": "Add an emergency contact first",
+    "loggedOut": "Log in and add someone you trust. SOS will call them from your phone.",
+    "noContacts": "Add someone you trust. SOS will call them from your phone.",
+    "login": "Log in",
+    "signup": "Create account",
+    "add": "Add a contact"
+  }
+}

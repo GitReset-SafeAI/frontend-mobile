@@ -9,8 +9,8 @@ const androidMapsApiKey = process.env.GOOGLE_MAPS_ANDROID_API_KEY ?? '';
 const { tokens }: typeof import('./src/shared/theme/tokens') = require('./src/shared/theme/tokens.ts');
 
 const config: ExpoConfig = {
-  name: 'SafeRoute AI',
-  slug: 'saferoute-ai',
+  name: 'SafeStep',
+  slug: 'safestep',
   version: '1.0.0',
   orientation: 'portrait',
   icon: './assets/icon.png',
@@ -30,14 +30,14 @@ const config: ExpoConfig = {
   plugins: [
     'expo-font',
     'expo-asset',
-    ['expo-localization', { supportedLocales: { ios: ['en', 'si'], android: ['en', 'si'] } }],
+    ['expo-localization', { supportedLocales: { ios: ['en', 'si', 'ta'], android: ['en', 'si', 'ta'] } }],
     ['expo-audio', {
-      microphonePermission: 'Allow SafeRoute AI to record audio when you choose voice input.',
+      microphonePermission: 'Allow SafeStep to record audio when you choose voice input.',
       enableBackgroundRecording: false,
       enableBackgroundPlayback: false,
     }],
     ['expo-location', {
-      locationWhenInUsePermission: 'Allow SafeRoute AI to use your location when you choose your current position.',
+      locationWhenInUsePermission: 'Allow SafeStep to use your location when you choose your current position.',
       isIosBackgroundLocationEnabled: false,
       isAndroidBackgroundLocationEnabled: false,
     }],

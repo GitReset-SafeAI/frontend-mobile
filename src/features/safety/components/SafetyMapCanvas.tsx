@@ -73,7 +73,7 @@ export function SafetyMapCanvas({
             center={hotspot.center}
             radius={hotspot.radiusM}
             fillColor={hotspotFill(hotspot.intensity)}
-            strokeColor={tokens.colors.status.error}
+            strokeColor={tokens.colors.map.areaOutline}
             strokeWidth={1}
           />
         ))}
@@ -108,7 +108,7 @@ export function SafetyMapCanvas({
               onPress={() => onRoutePress(route.id)}
               strokeWidth={route.id === selectedRouteId ? 7 : 4}
               strokeColor={
-                route.id === selectedRouteId ? tokens.colors.primaryDark : tokens.colors.disabled
+                route.id === selectedRouteId ? tokens.colors.map.route : tokens.colors.map.routeAlternative
               }
             />
           ))}
@@ -135,9 +135,9 @@ export function SafetyMapCanvas({
           );
         })}
 
-        {origin ? <Marker coordinate={origin} title={originLabel} pinColor={tokens.colors.status.info} /> : null}
+        {origin ? <Marker coordinate={origin} title={originLabel} pinColor={tokens.colors.map.origin} /> : null}
         {destination ? (
-          <Marker coordinate={destination} title={destinationLabel} pinColor={tokens.colors.primaryDark} />
+          <Marker coordinate={destination} title={destinationLabel} pinColor={tokens.colors.map.destination} />
         ) : null}
       </MapView>
     </View>

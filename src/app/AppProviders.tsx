@@ -4,6 +4,7 @@ import { I18nextProvider } from 'react-i18next';
 import { PaperProvider } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { AuthProvider } from '../features/account';
 import i18n from '../i18n';
 import { createQueryClient } from '../services/queryClient';
 import { subscribeQueryLifecycle } from '../services/queryLifecycle';
@@ -24,7 +25,9 @@ export function AppProviders({ children, queryClient, enableQueryLifecycle = tru
     <SafeAreaProvider>
       <I18nextProvider i18n={i18n}>
         <PaperProvider theme={theme}>
-          <QueryClientProvider client={client}>{children}</QueryClientProvider>
+          <QueryClientProvider client={client}>
+            <AuthProvider>{children}</AuthProvider>
+          </QueryClientProvider>
         </PaperProvider>
       </I18nextProvider>
     </SafeAreaProvider>

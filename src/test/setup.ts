@@ -42,3 +42,13 @@ jest.mock('expo-location', () => ({
   requestForegroundPermissionsAsync: jest.fn(async () => ({ granted: false })),
   getCurrentPositionAsync: jest.fn(async () => ({ coords: { latitude: 0, longitude: 0 } })),
 }));
+
+// Secure storage is native. An in-memory stand-in keeps the demo account tests deterministic, and every test
+// starts with nothing stored.
+const mockSecureStore = new Map<string, string>();
+jest.mock('expo-secure-store', () => ({
+  getItemAsync: jest.fn(async (key: string) => mockSecureStore.get(key) ?? null),
+  setItemAsync: jest.fn(async (key: string, value: string) => { mockSecureStore.set(key, value); }),
+  deleteItemAsync: jest.fn(async (key: string) => { mockSecureStore.delete(key); }),
+}));
+beforeEach(() => { mockSecureStore.clear(); });

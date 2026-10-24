@@ -1,0 +1,92 @@
+{
+  "nav": {
+    "login": "Log in",
+    "account": "Account",
+    "accountA11y": "Your account, {{name}}",
+    "accountTabA11y": "Account tab"
+  },
+  "auth": {
+    "loginTab": "Log in",
+    "signupTab": "Create account",
+    "tabsA11y": "Log in or create an account",
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Log in to keep emergency contacts that SOS can call.",
+    "signupTitle": "Create your account",
+    "signupSubtitle": "An account lets you keep the people you trust ready for SOS.",
+    "name": "Your name",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 8 characters",
+    "loginSubmit": "Log in",
+    "signupSubmit": "Create account",
+    "demoNote": "Demo sign-in: no real account is created, nothing leaves this browser, and no password is checked or stored. Real sign-in arrives with the backend.",
+    "errors": {
+      "name": "Please enter your name.",
+      "email": "Please enter a valid email address.",
+      "password": "Use at least 8 characters.",
+      "passwordRequired": "Please enter your password.",
+      "notFound": "We couldn't find an account with that email. Check it, or create an account.",
+      "conflict": "An account with this email already exists. Try logging in.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "demoAccount": {
+      "title": "Just exploring?",
+      "body": "Use the demo account. It comes with two sample contacts, and any password works. Sample numbers are placeholders: add your own number to test dialling.",
+      "button": "Use demo account"
+    },
+    "guest": "Continue without an account"
+  },
+  "account": {
+    "title": "Your account",
+    "hello": "Hello, {{name}}",
+    "logout": "Log out",
+    "loggingOut": "Logging out…",
+    "loading": "Loading your account…",
+    "signedInAs": "Signed in as {{email}}",
+    "guestTitle": "Log in to add emergency contacts",
+    "guestBody": "SOS calls the people you choose. You can still report incidents and view the map without an account."
+  },
+  "contacts": {
+    "title": "Emergency contacts",
+    "subtitle": "SOS calls your first contact. Add up to {{max}} people you trust.",
+    "count": "{{count}} of {{max}}",
+    "empty": "No contacts yet. Add someone you trust so SOS knows who to call.",
+    "add": "Add a contact",
+    "limit": "You've added the most you can ({{max}}). Remove one to add another.",
+    "primary": "Primary",
+    "makePrimary": "Make primary",
+    "edit": "Edit",
+    "remove": "Remove",
+    "call": "Call",
+    "callA11y": "Call {{name}}",
+    "editA11y": "Edit {{name}}",
+    "removeA11y": "Remove {{name}}",
+    "makePrimaryA11y": "Make {{name}} the primary contact",
+    "formTitleAdd": "Add a contact",
+    "formTitleEdit": "Edit contact",
+    "name": "Name",
+    "phone": "Phone number",
+    "phoneHint": "For example 077 123 4567 or +94 77 123 4567",
+    "relationship": "Relationship (optional)",
+    "relationships": {
+      "family": "Family",
+      "friend": "Friend",
+      "partner": "Partner",
+      "other": "Other"
+    },
+    "save": "Save contact",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "errors": {
+      "name": "Please enter a name.",
+      "phone": "Enter a valid Sri Lankan phone number.",
+      "limit": "You can add up to {{max}} contacts.",
+      "generic": "We couldn't save that. Please try again."
+    },
+    "removeTitle": "Remove {{name}}?",
+    "removeBody": "SOS will no longer call this person.",
+    "removeConfirm": "Yes, remove",
+    "privacy": "Contacts are only used to place a call from your phone when you use SOS. SafeStep never contacts them for you.",
+    "demoStorage": "Demo: contacts are saved only in this browser."
+  }
+}

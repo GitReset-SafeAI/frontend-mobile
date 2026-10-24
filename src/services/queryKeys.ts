@@ -12,6 +12,7 @@ function boundsKey({ bounds }: HotspotsRequest) {
 
 export const queryKeys = {
   serviceStatus: ['service-status'] as const,
+  contacts: ['contacts'] as const,
   hotspots: (request: HotspotsRequest) =>
     ['hotspots', boundsKey(request), request.timePeriod, request.windowDays ?? 'default'] as const,
 };
