@@ -30,6 +30,7 @@ const config: ExpoConfig = {
   plugins: [
     'expo-font',
     'expo-asset',
+    'expo-secure-store',
     ['expo-localization', { supportedLocales: { ios: ['en', 'si', 'ta'], android: ['en', 'si', 'ta'] } }],
     ['expo-audio', {
       microphonePermission: 'Allow SafeStep to record audio when you choose voice input.',

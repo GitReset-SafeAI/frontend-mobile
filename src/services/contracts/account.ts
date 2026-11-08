@@ -41,12 +41,22 @@ export const signUpInputSchema = z.object({
 });
 export type SignUpInput = z.infer<typeof signUpInputSchema>;
 
+// Real registration extends the demo form; backend accepts both old and new NIC formats.
+export const registrationSchema = signUpInputSchema.extend({
+  email: z.string().trim().min(3).max(254).regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
+  password: z.string().min(8).max(4096),
+  nic: z.string().regex(/^(?:[0-9]{9}[VvXx]|[0-9]{12})$/),
+  phone_number: normalisedPhoneSchema,
+});
+export type RegistrationInput = z.infer<typeof registrationSchema>;
+
 export interface AuthService {
   // Resolves to the signed-in user, or null when there is no session.
   getSession(): Promise<User | null>;
-  signUp(input: SignUpInput): Promise<User>;
+  signUp(input: SignUpInput | RegistrationInput): Promise<User | null>;
   logIn(input: LogInInput): Promise<User>;
   logOut(): Promise<void>;
+  subscribe?(listener: (user: User | null, error?: Error) => void): () => void;
 }
 
 // Contacts belong to the signed-in user. The first contact is the primary one that SOS calls.

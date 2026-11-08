@@ -11,6 +11,7 @@ export type {
   ContactService,
   EmergencyContact,
   LogInInput,
+  RegistrationInput,
   SignUpInput,
   User,
 } from './account';
