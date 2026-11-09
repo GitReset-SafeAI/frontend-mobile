@@ -9,6 +9,8 @@ import {
 import { env } from '../../config/env';
 import { ApiError } from './ApiError';
 import { createApiClient } from './client';
+import { apiContacts } from './contacts';
+import { submitApiReport } from './reports';
 
 const client = createApiClient(env.apiBaseUrl);
 
@@ -30,7 +32,7 @@ const notAgreed = (what: string) => async (): Promise<never> => {
 
 export const apiServices: AppServices = {
   reports: {
-    submitReport: notAgreed('report submission'),
+    submitReport: submitApiReport,
     transcribeVoice: notAgreed('transcription'),
   },
   auth: {
@@ -39,13 +41,7 @@ export const apiServices: AppServices = {
     logIn: notAgreed('authentication'),
     logOut: notAgreed('authentication'),
   },
-  contacts: {
-    list: notAgreed('emergency contacts'),
-    add: notAgreed('emergency contacts'),
-    update: notAgreed('emergency contacts'),
-    remove: notAgreed('emergency contacts'),
-    makePrimary: notAgreed('emergency contacts'),
-  },
+  contacts: apiContacts,
   status: {
     async getStatus() {
       throw new ApiError('not-implemented', 'The backend status contract has not been agreed.');

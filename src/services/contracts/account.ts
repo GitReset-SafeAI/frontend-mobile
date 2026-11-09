@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
-// Provisional UI-facing models, NOT agreed backend schemas. Authentication, token lifetime, and where
-// contacts are stored are all open backend decisions (see README). Nothing here assumes a transport.
+// App-facing models shared by demo and real services. Contact slot metadata is validated at the
+// API boundary without changing the shape of existing locally stored demo contacts.
 
+// Confirmed by FastAPI's slot range 0..4 and the emergency-contact SQL allocation function.
 export const MAX_CONTACTS = 5;
 
 export const contactRelationships = ['family', 'friend', 'partner', 'other'] as const;
@@ -62,9 +63,15 @@ export interface AuthService {
 // Contacts belong to the signed-in user. The first contact is the primary one that SOS calls.
 // The client never sends a user id: who the caller is comes from the session.
 export interface ContactService {
-  list(): Promise<EmergencyContact[]>;
-  add(input: ContactInput): Promise<EmergencyContact>;
-  update(id: string, input: ContactInput): Promise<EmergencyContact>;
-  remove(id: string): Promise<void>;
-  makePrimary(id: string): Promise<void>;
+  list(context?: ContactRequestContext): Promise<EmergencyContact[]>;
+  add(input: ContactInput, context?: ContactRequestContext): Promise<EmergencyContact>;
+  update(id: string, input: ContactInput, context?: ContactRequestContext): Promise<EmergencyContact>;
+  remove(id: string, context?: ContactRequestContext): Promise<void>;
+  makePrimary(id: string, context?: ContactRequestContext): Promise<void>;
+}
+
+// Local request ownership/cancellation only. These fields are never sent to the backend.
+export interface ContactRequestContext {
+  userId?: string;
+  signal?: AbortSignal;
 }

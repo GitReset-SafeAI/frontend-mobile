@@ -2,7 +2,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
-import { Icon, Text } from 'react-native-paper';
+import { Icon, Text, TextInput } from 'react-native-paper';
 
 import type { ReportStackParamList } from '../../../app/navigation/navigation.types';
 import { AppButton } from '../../../shared/components/AppButton';
@@ -11,7 +11,7 @@ import { InfoNote } from '../../../shared/components/InfoNote';
 import { StepLayout } from '../../../shared/layouts/StepLayout';
 import { tokens } from '../../../shared/theme/tokens';
 import { type ApproximateLocation, type IncidentTime } from '../../../services/contracts';
-import { incidentTimes } from '../../../services/contracts/incident';
+import { incidentTimes, reportTimingSchema } from '../../../services/contracts/incident';
 import { DistrictPicker } from '../components/DistrictPicker';
 import { districts } from '../districts';
 import { useApproximateLocation } from '../hooks/useApproximateLocation';
@@ -29,7 +29,8 @@ export function ReportWhenScreen({ navigation }: Props) {
   const { status, locate } = useApproximateLocation(onLocated);
 
   const timeOptions = incidentTimes.map((value) => ({ value, label: t(`when.options.${value}`) }));
-  const answered = Boolean(draft.occurredWhen || draft.location);
+  const answered = Boolean(draft.incidentDate || draft.clockTime || draft.timePeriod || draft.location);
+  const validTime = reportTimingSchema.safeParse(draft).success;
   const location = draft.location;
 
   const selectDistrict = (id: string) => {
@@ -48,7 +49,7 @@ export function ReportWhenScreen({ navigation }: Props) {
       footer={(
         <>
           <AppButton mode="outlined" style={styles.flex} onPress={() => { navigation.goBack(); }}>{tc('back')}</AppButton>
-          <AppButton mode="contained" style={styles.flex} onPress={() => { navigation.navigate('ReportDetails'); }}>
+          <AppButton mode="contained" style={styles.flex} disabled={!validTime} onPress={() => { navigation.navigate('ReportDetails'); }}>
             {answered ? tc('next') : tc('skip')}
           </AppButton>
         </>
@@ -57,9 +58,21 @@ export function ReportWhenScreen({ navigation }: Props) {
       <ChoiceGroup<IncidentTime>
         label={t('when.whenLabel')}
         options={timeOptions}
-        value={draft.occurredWhen}
-        onChange={(occurredWhen) => { update({ occurredWhen }); }}
+        value={draft.timePeriod}
+        onChange={(timePeriod) => { update({ timePeriod }); }}
       />
+      <TextInput
+        mode="outlined" label={t('when.dateLabel')} placeholder="YYYY-MM-DD"
+        value={draft.incidentDate ?? ''} maxLength={10}
+        onChangeText={(incidentDate) => { update({ incidentDate: incidentDate || undefined }); }}
+      />
+      <TextInput
+        mode="outlined" label={t('when.clockLabel')} placeholder="HH:mm"
+        value={draft.clockTime ?? ''} maxLength={5}
+        onChangeText={(clockTime) => { update({ clockTime: clockTime || undefined }); }}
+      />
+      <InfoNote text={t('when.dateHint')} />
+      {!validTime ? <InfoNote tone="error" text={t('when.invalidTime')} /> : null}
 
       <View style={styles.where}>
         <Text variant="titleMedium" style={styles.heading} accessibilityRole="header">{t('when.whereLabel')}</Text>

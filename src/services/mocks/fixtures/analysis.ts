@@ -24,7 +24,7 @@ export function analyseSyntheticReport(submission: ReportSubmission): IncidentAn
   if (vehicle) extractedDetails.push({ kind: 'vehicle', value: vehicle[0] });
 
   const missingInformation: IncidentAnalysis['missingInformation'] = [];
-  if (!submission.occurredWhen) missingInformation.push('time');
+  if (!submission.clockTime && !submission.timePeriod) missingInformation.push('time');
   if (!submission.location) missingInformation.push('location');
 
   const severity: IncidentAnalysis['severity'] =

@@ -1,6 +1,6 @@
 import type { AppServices, HotspotsRequest, HotspotsResult } from '../contracts';
 import { mockAuth, mockContacts } from './accounts';
-import { analyseSyntheticReport, sampleTranscript } from './fixtures/analysis';
+import { sampleTranscript } from './fixtures/analysis';
 import { searchDemoPlaces } from './fixtures/places';
 import { demoHotspots } from './fixtures/safetyMap';
 import { demoStatus } from './fixtures/status';
@@ -35,7 +35,8 @@ export const mockServices: AppServices = {
       await wait(mockLatencyMs);
       return {
         reportId: `mock-${Date.now().toString(36)}`,
-        analysis: analyseSyntheticReport(submission),
+        submittedAt: new Date().toISOString(),
+        originalText: submission.description.trim(),
       };
     },
     async transcribeVoice() {

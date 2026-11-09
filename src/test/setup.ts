@@ -1,5 +1,8 @@
 // Deterministic public settings only. No local .env files are read by tests.
 process.env.EXPO_PUBLIC_DATA_MODE = 'mock';
+process.env.EXPO_PUBLIC_AUTH_MODE = 'demo';
+process.env.EXPO_PUBLIC_SUPABASE_URL = '';
+process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY = '';
 process.env.EXPO_PUBLIC_API_BASE_URL = '';
 
 jest.mock('react-native-safe-area-context', () =>

@@ -1,4 +1,5 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { Card, Text } from 'react-native-paper';
@@ -9,15 +10,19 @@ import { InfoNote } from '../../../shared/components/InfoNote';
 import { StepLayout } from '../../../shared/layouts/StepLayout';
 import { tokens } from '../../../shared/theme/tokens';
 import { reportSubmissionSchema } from '../../../services/contracts/incident';
+import { ApiError } from '../../../services/api/ApiError';
+import { useAuth } from '../../account/authContext';
 import { useSubmitReport } from '../hooks/useSubmitReport';
 import { toSubmission, useReportDraft } from '../reportDraft';
+import { reportErrorKey } from '../reportErrors';
 
 type Props = NativeStackScreenProps<ReportStackParamList, 'ReportReview'>;
 
-function SummarySection({ title, editLabel, onEdit, children }: {
+function SummarySection({ title, editLabel, onEdit, disabled, children }: {
   title: string;
   editLabel: string;
   onEdit: () => void;
+  disabled?: boolean;
   children: string[];
 }) {
   return (
@@ -25,7 +30,7 @@ function SummarySection({ title, editLabel, onEdit, children }: {
       <Card.Content style={styles.cardContent}>
         <View style={styles.cardHeader}>
           <Text variant="titleMedium" style={styles.cardTitle} accessibilityRole="header">{title}</Text>
-          <AppButton mode="text" compact accessibilityLabel={`${editLabel}: ${title}`} onPress={onEdit}>{editLabel}</AppButton>
+          <AppButton mode="text" compact disabled={disabled} accessibilityLabel={`${editLabel}: ${title}`} onPress={onEdit}>{editLabel}</AppButton>
         </View>
         {children.map((line) => <Text key={line} variant="bodyLarge" style={styles.line}>{line}</Text>)}
       </Card.Content>
@@ -37,12 +42,16 @@ export function ReportReviewScreen({ navigation }: Props) {
   const { t } = useTranslation('reporting');
   const { t: tc } = useTranslation();
   const { draft, setReceipt } = useReportDraft();
+  const { user, requestLogin } = useAuth();
+  const locked = useRef(false);
   const submit = useSubmitReport();
   const parsed = reportSubmissionSchema.safeParse(toSubmission(draft));
   const notProvided = t('review.notProvided');
 
   const whenWhere = [
-    draft.occurredWhen ? t(`when.options.${draft.occurredWhen}`) : undefined,
+    draft.incidentDate,
+    draft.clockTime ? `${draft.clockTime} (UTC+05:30)` : undefined,
+    draft.timePeriod ? t(`when.options.${draft.timePeriod}`) : undefined,
     draft.location
       ? (draft.location.source === 'device' || !draft.location.districtId
         ? t('when.selectedCurrent')
@@ -52,18 +61,19 @@ export function ReportReviewScreen({ navigation }: Props) {
 
   const extra = [
     draft.lighting ? `${t('details.lighting')}: ${t(`details.lightingOptions.${draft.lighting}`)}` : undefined,
-    draft.crowd ? `${t('details.crowd')} ${t(`details.crowdOptions.${draft.crowd}`)}` : undefined,
-    draft.othersNearby ? `${t('details.others')} ${t(`details.othersOptions.${draft.othersNearby}`)}` : undefined,
   ].filter((line): line is string => Boolean(line));
 
   const onSubmit = () => {
-    if (!parsed.success) return;
+    if (!user) { requestLogin(); return; }
+    if (!parsed.success || draft.transcriptPending || locked.current) return;
+    locked.current = true;
     submit.mutate(parsed.data, {
       onSuccess: (receipt) => {
         setReceipt(receipt);
         // Reset the stack so Back can never return to the form and submit the same report twice.
         navigation.reset({ index: 0, routes: [{ name: 'ReportSubmitted' }] });
       },
+      onError: () => { locked.current = false; },
     });
   };
 
@@ -80,7 +90,7 @@ export function ReportReviewScreen({ navigation }: Props) {
             mode="contained"
             style={styles.flex}
             loading={submit.isPending}
-            disabled={submit.isPending || !parsed.success}
+            disabled={submit.isPending || !parsed.success || draft.transcriptPending}
             onPress={onSubmit}
           >
             {t('review.submit')}
@@ -90,25 +100,27 @@ export function ReportReviewScreen({ navigation }: Props) {
     >
       {!parsed.success ? <InfoNote tone="error" icon="alert-circle-outline" text={t('review.invalid')} /> : null}
       {submit.isError ? (
-        <InfoNote tone="error" icon="alert-circle-outline" text={`${t('review.errorTitle')}. ${t('review.errorBody')}`} />
+        <InfoNote tone="error" icon="alert-circle-outline" text={t(reportErrorKey(submit.error))} />
+      ) : null}
+      {submit.error instanceof ApiError && submit.error.status === 401 ? (
+        <AppButton mode="outlined" onPress={() => { requestLogin(); }}>{t('auth.login')}</AppButton>
       ) : null}
       {submit.isPending ? (
         <View accessibilityLiveRegion="polite"><InfoNote icon="timer-sand" text={t('review.submitting')} /></View>
       ) : null}
 
-      <SummarySection title={t('review.what')} editLabel={tc('edit')} onEdit={() => { navigation.navigate('ReportDescribe'); }}>
+      <SummarySection title={t('review.what')} disabled={submit.isPending} editLabel={tc('edit')} onEdit={() => { navigation.navigate('ReportDescribe'); }}>
         {[draft.description.trim() || notProvided]}
       </SummarySection>
-      <SummarySection title={t('review.whenWhere')} editLabel={tc('edit')} onEdit={() => { navigation.navigate('ReportWhen'); }}>
+      <SummarySection title={t('review.whenWhere')} disabled={submit.isPending} editLabel={tc('edit')} onEdit={() => { navigation.navigate('ReportWhen'); }}>
         {whenWhere.length ? whenWhere : [notProvided]}
       </SummarySection>
-      <SummarySection title={t('review.extra')} editLabel={tc('edit')} onEdit={() => { navigation.navigate('ReportDetails'); }}>
+      <SummarySection title={t('review.extra')} disabled={submit.isPending} editLabel={tc('edit')} onEdit={() => { navigation.navigate('ReportDetails'); }}>
         {extra.length ? extra : [notProvided]}
       </SummarySection>
 
       <View style={styles.notes}>
         <InfoNote icon="lock-outline" text={t('review.privacy')} />
-        <InfoNote icon="robot-outline" text={t('review.aiNote')} />
       </View>
     </StepLayout>
   );

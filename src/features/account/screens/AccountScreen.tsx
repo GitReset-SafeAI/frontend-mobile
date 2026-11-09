@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -11,9 +11,11 @@ import { AppButton } from '../../../shared/components/AppButton';
 import { InfoNote } from '../../../shared/components/InfoNote';
 import { tokens } from '../../../shared/theme/tokens';
 import { useAuth } from '../authContext';
+import { env } from '../../../config/env';
 import { ContactCard } from '../components/ContactCard';
 import { ContactFormModal } from '../components/ContactFormModal';
 import { useContactMutations, useContacts } from '../hooks/useContacts';
+import { contactErrorKey } from '../contactErrors';
 
 // The first contact in the list is the one SOS calls. Contacts are shown, edited and removed here only.
 export function AccountScreen() {
@@ -22,7 +24,15 @@ export function AccountScreen() {
   const contacts = useContacts();
   const mutations = useContactMutations();
   const [editing, setEditing] = useState<EmergencyContact | 'new' | null>(null);
+  const [editingOwner, setEditingOwner] = useState<string | null>(null);
+  const currentOwner = useRef(user?.id);
+  useLayoutEffect(() => {
+    currentOwner.current = user?.id;
+    return () => { currentOwner.current = undefined; };
+  }, [user?.id]);
+  const currentEditing = editingOwner === user?.id ? editing : null;
   const [loggingOut, setLoggingOut] = useState(false);
+  const [logoutError, setLogoutError] = useState(false);
 
   if (status === 'loading') {
     return (
@@ -46,15 +56,19 @@ export function AccountScreen() {
     );
   }
 
-  const list = contacts.data ?? [];
+  const permissionError = contacts.error instanceof ApiError && ['unauthorized', 'forbidden'].includes(contacts.error.kind);
+  const list = permissionError ? [] : contacts.data ?? [];
   const atLimit = list.length >= MAX_CONTACTS;
   const saving = mutations.add.isPending || mutations.update.isPending;
-  const busy = mutations.makePrimary.isPending || mutations.remove.isPending;
+  const busy = saving || mutations.makePrimary.isPending || mutations.remove.isPending || contacts.isFetching;
+  const operationError = mutations.remove.error ?? mutations.makePrimary.error;
+  const needsLogin = [contacts.error, mutations.add.error, mutations.update.error, operationError]
+    .some((error) => error instanceof ApiError && error.kind === 'unauthorized');
 
   const saveError = (() => {
     const error = mutations.add.error ?? mutations.update.error;
     if (!error) return undefined;
-    return t(error instanceof ApiError && error.kind === 'limit' ? 'contacts.errors.limit' : 'contacts.errors.generic', { max: MAX_CONTACTS });
+    return t(contactErrorKey(error), { max: MAX_CONTACTS });
   })();
 
   const closeForm = () => {
@@ -63,23 +77,40 @@ export function AccountScreen() {
     mutations.update.reset();
   };
 
+  const openForm = (contact: EmergencyContact | 'new') => {
+    setEditingOwner(user.id);
+    setEditing(contact);
+    mutations.remove.reset();
+    mutations.makePrimary.reset();
+  };
+
   const save = (input: ContactInput) => {
-    const done = { onSuccess: closeForm };
-    if (editing && editing !== 'new') mutations.update.mutate({ id: editing.id, input }, done);
+    if (!currentEditing) return;
+    const owner = user.id;
+    const done = { onSuccess: () => { if (currentOwner.current === owner) closeForm(); } };
+    if (currentEditing !== 'new') mutations.update.mutate({ id: currentEditing.id, input }, done);
     else mutations.add.mutate(input, done);
   };
 
   // A native confirmation: removing is easy to regret, and the system dialog is familiar and accessible.
   const confirmRemove = (contact: EmergencyContact) => {
+    const owner = user.id;
     Alert.alert(t('contacts.removeTitle', { name: contact.name }), t('contacts.removeBody'), [
       { text: t('contacts.cancel'), style: 'cancel' },
-      { text: t('contacts.removeConfirm'), style: 'destructive', onPress: () => { mutations.remove.mutate(contact.id); } },
+      { text: t('contacts.removeConfirm'), style: 'destructive', onPress: () => {
+        if (currentOwner.current !== owner) return;
+        mutations.makePrimary.reset();
+        mutations.remove.mutate(contact.id);
+      } },
     ]);
   };
 
   const doLogOut = async () => {
     setLoggingOut(true);
-    await logOut();
+    setLogoutError(false);
+    try { await logOut(); }
+    catch { setLogoutError(true); }
+    finally { setLoggingOut(false); }
   };
 
   return (
@@ -98,7 +129,14 @@ export function AccountScreen() {
         </View>
 
         {contacts.isPending ? <ActivityIndicator size="large" color={tokens.colors.navy} /> : null}
-        {contacts.isError ? <InfoNote tone="error" icon="alert-circle-outline" text={t('contacts.errors.generic')} /> : null}
+        {contacts.isError ? (
+          <>
+            <InfoNote tone="error" icon="alert-circle-outline" text={t(contactErrorKey(contacts.error), { max: MAX_CONTACTS })} />
+            <AppButton mode="text" onPress={() => { void contacts.refetch(); }}>{t('contacts.retry')}</AppButton>
+          </>
+        ) : null}
+        {operationError ? <InfoNote tone="error" text={t(contactErrorKey(operationError), { max: MAX_CONTACTS })} /> : null}
+        {needsLogin ? <AppButton mode="text" onPress={() => { requestLogin('login'); }}>{t('auth.loginSubmit')}</AppButton> : null}
         {contacts.isSuccess && list.length === 0 ? (
           <View style={styles.empty}><Text variant="bodyLarge" style={styles.muted}>{t('contacts.empty')}</Text></View>
         ) : null}
@@ -109,22 +147,24 @@ export function AccountScreen() {
             contact={contact}
             isPrimary={index === 0}
             busy={busy}
-            onEdit={() => { setEditing(contact); }}
+            onEdit={() => { openForm(contact); }}
             onRemove={() => { confirmRemove(contact); }}
-            onMakePrimary={() => { mutations.makePrimary.mutate(contact.id); }}
+            onMakePrimary={() => { mutations.remove.reset(); mutations.makePrimary.mutate(contact.id); }}
           />
         ))}
 
-        <AppButton mode="contained" icon="plus" disabled={atLimit || contacts.isPending} onPress={() => { setEditing('new'); }}>
+        <AppButton mode="contained" icon="plus" disabled={atLimit || contacts.isPending || contacts.isError || busy} onPress={() => { openForm('new'); }}>
           {t('contacts.add')}
         </AppButton>
         {atLimit ? <Text variant="bodyMedium" style={styles.muted}>{t('contacts.limit', { max: MAX_CONTACTS })}</Text> : null}
 
         <InfoNote icon="shield-check-outline" text={t('contacts.privacy')} />
-        <Text variant="bodySmall" style={styles.muted}>{t('contacts.demoStorage')}</Text>
+        <Text variant="bodySmall" style={styles.muted}>{t(env.dataMode === 'api' ? 'contacts.serverStorage'
+          : env.authMode === 'demo' ? 'contacts.demoStorage' : 'contacts.notConnected')}</Text>
 
         {/* Logging out is rare and easy to regret, so it sits at the end, apart from the contacts. */}
         <View style={styles.footer}>
+          {logoutError ? <InfoNote tone="error" text={t('account.logoutError')} /> : null}
           <Text variant="bodyMedium" style={styles.muted}>{t('account.signedInAs', { email: user.email })}</Text>
           <AppButton mode="outlined" icon="logout" loading={loggingOut} disabled={loggingOut} onPress={() => { void doLogOut(); }}>
             {loggingOut ? t('account.loggingOut') : t('account.logout')}
@@ -132,14 +172,15 @@ export function AccountScreen() {
         </View>
       </ScrollView>
 
-      <ContactFormModal
-        visible={editing !== null}
-        contact={editing && editing !== 'new' ? editing : undefined}
+      {currentEditing !== null ? <ContactFormModal
+        key={`${user.id}:${currentEditing === 'new' ? 'new' : currentEditing.id}`}
+        visible
+        contact={currentEditing !== 'new' ? currentEditing : undefined}
         saving={saving}
         error={saveError}
         onSave={save}
         onClose={closeForm}
-      />
+      /> : null}
     </SafeAreaView>
   );
 }

@@ -3,12 +3,17 @@ import { mapsConfig } from '../config/maps';
 
 describe('public configuration', () => {
   it('defaults to mock mode without a backend URL', () => {
-    expect(parseEnvironment({})).toEqual({ dataMode: 'mock' });
-    expect(parseEnvironment({ dataMode: ' ', apiBaseUrl: '' })).toEqual({ dataMode: 'mock' });
+    expect(parseEnvironment({})).toEqual({ dataMode: 'mock', authMode: 'demo' });
+    expect(parseEnvironment({ dataMode: ' ', apiBaseUrl: '' })).toEqual({ dataMode: 'mock', authMode: 'demo' });
   });
 
   it('allows explicit API mode before a backend URL exists', () => {
-    expect(parseEnvironment({ dataMode: 'api' })).toEqual({ dataMode: 'api' });
+    expect(parseEnvironment({ dataMode: 'api' })).toEqual({ dataMode: 'api', authMode: 'demo' });
+  });
+
+  it('selects authentication independently without requiring Supabase configuration for demo mode', () => {
+    expect(parseEnvironment({ dataMode: 'mock', authMode: 'supabase' })).toMatchObject({ dataMode: 'mock', authMode: 'supabase' });
+    expect(() => parseEnvironment({ authMode: 'invalid' })).toThrow('Invalid public app configuration');
   });
 
   it('rejects invalid modes and private credential-bearing URLs without echoing them', () => {

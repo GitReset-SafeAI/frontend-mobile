@@ -7,26 +7,31 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { DEMO_EMAIL } from '../../../config/demo';
 import { env } from '../../../config/env';
 import { ApiError } from '../../../services/api/ApiError';
-import { logInInputSchema, signUpInputSchema } from '../../../services/contracts/account';
+import { logInInputSchema, registrationSchema, signUpInputSchema } from '../../../services/contracts/account';
+import { loginSchema } from '../../../services/auth/supabaseAuth';
 import { AppButton } from '../../../shared/components/AppButton';
 import { BrandFullLogo } from '../../../shared/components/Brand';
 import { InfoNote } from '../../../shared/components/InfoNote';
 import { LanguageToggle } from '../../../shared/components/LanguageToggle';
 import { tokens } from '../../../shared/theme/tokens';
 import { type AuthMode, useAuth } from '../authContext';
+import { normalizePhone } from '../phone';
 
-type FieldErrors = Partial<Record<'name' | 'email' | 'password', string>>;
+type FieldErrors = Partial<Record<'name' | 'email' | 'password' | 'nic' | 'phone_number', string>>;
 
-// The first screen when nobody is signed in. Sign-in is a demo until the backend exists (the note on the screen
-// says so): the service boundary is real, the security is not. Logging in or signing up leads to Home.
+// Demo signup enters Home; real registration returns to login without establishing a session.
 export function AuthScreen() {
   const { t } = useTranslation('account');
   const { t: tc } = useTranslation();
-  const { logIn, signUp, continueAsGuest, preferredMode } = useAuth();
+  const { logIn, signUp, continueAsGuest, preferredMode, error: restorationError } = useAuth();
+  const realAuth = env.authMode === 'supabase';
   const [mode, setMode] = useState<AuthMode>(preferredMode);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [nic, setNic] = useState('');
+  const [phone, setPhone] = useState('');
+  const [registered, setRegistered] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | undefined>();
   const [pending, setPending] = useState(false);
@@ -35,18 +40,21 @@ export function AuthScreen() {
     setMode(next);
     setErrors({});
     setFormError(undefined);
+    setRegistered(false);
   };
 
   const submit = async () => {
     setFormError(undefined);
+    const signupValues = { name, email, password, nic, phone_number: normalizePhone(phone) ?? '' };
+    const signupSchema = realAuth ? registrationSchema : signUpInputSchema;
     const parsed = mode === 'signup'
-      ? signUpInputSchema.safeParse({ name, email, password })
-      : logInInputSchema.safeParse({ email, password });
+      ? signupSchema.safeParse(signupValues)
+      : (realAuth ? loginSchema : logInInputSchema).safeParse({ email, password });
     if (!parsed.success) {
       const next: FieldErrors = {};
       for (const issue of parsed.error.issues) {
         const field = issue.path[0];
-        if (field === 'name' || field === 'email' || field === 'password') {
+        if (field === 'name' || field === 'email' || field === 'password' || field === 'nic' || field === 'phone_number') {
           next[field] ??= t(field === 'password' && mode === 'login' ? 'auth.errors.passwordRequired' : `auth.errors.${field}`);
         }
       }
@@ -56,14 +64,19 @@ export function AuthScreen() {
     setErrors({});
     setPending(true);
     try {
-      if (mode === 'signup') await signUp(signUpInputSchema.parse({ name, email, password }));
-      else await logIn(logInInputSchema.parse({ email, password }));
-      // On success the root navigator swaps this screen for Home.
+      if (mode === 'signup') {
+        const user = await signUp(signupSchema.parse(signupValues));
+        if (!user) { setMode('login'); setPassword(''); setNic(''); setPhone(''); setRegistered(true); }
+      } else await logIn((realAuth ? loginSchema : logInInputSchema).parse({ email, password }));
+      // A successful login is reflected by the auth provider and existing root navigator.
     } catch (error) {
       const kind = error instanceof ApiError ? error.kind : 'unknown';
-      setFormError(t(kind === 'not-found' ? 'auth.errors.notFound' : kind === 'conflict' ? 'auth.errors.conflict' : 'auth.errors.generic'));
-      setPending(false);
-    }
+      const key = kind === 'not-found' ? 'notFound' : kind === 'conflict' ? 'conflict'
+        : kind === 'unauthorized' ? 'credentials' : kind === 'forbidden' ? 'unconfirmed'
+          : kind === 'rate-limit' ? 'rateLimit' : kind === 'configuration' ? 'configuration'
+            : kind === 'validation' ? 'validation' : 'generic';
+      setFormError(t(`auth.errors.${key}`));
+    } finally { setPending(false); }
   };
 
   const signInToDemo = async () => {
@@ -117,6 +130,8 @@ export function AuthScreen() {
           </View>
 
           <View style={styles.form}>
+            {registered ? <InfoNote icon="check-circle-outline" text={t('auth.registered')} /> : null}
+            {restorationError ? <InfoNote tone="error" text={t(restorationError.kind === 'configuration' ? 'auth.errors.configuration' : 'auth.errors.restore')} /> : null}
             {mode === 'signup' ? (
               <View>
                 <TextInput
@@ -132,6 +147,20 @@ export function AuthScreen() {
                 />
                 <HelperText type="error" visible={Boolean(errors.name)}>{errors.name}</HelperText>
               </View>
+            ) : null}
+            {mode === 'signup' && realAuth ? (
+              <>
+                <View>
+                  <TextInput {...inputProps} label={t('auth.nic')} accessibilityLabel={t('auth.nic')}
+                    value={nic} onChangeText={setNic} error={Boolean(errors.nic)} maxLength={12} autoCapitalize="characters" autoComplete="off" />
+                  <HelperText type="error" visible={Boolean(errors.nic)}>{errors.nic}</HelperText>
+                </View>
+                <View>
+                  <TextInput {...inputProps} label={t('auth.phone')} accessibilityLabel={t('auth.phone')}
+                    value={phone} onChangeText={setPhone} error={Boolean(errors.phone_number)} keyboardType="phone-pad" autoComplete="tel" />
+                  <HelperText type="error" visible={Boolean(errors.phone_number)}>{errors.phone_number}</HelperText>
+                </View>
+              </>
             ) : null}
             <View>
               <TextInput
@@ -174,7 +203,7 @@ export function AuthScreen() {
             </AppButton>
           </View>
 
-          {env.dataMode === 'mock' ? (
+          {!realAuth ? (
             <View style={styles.demo}>
               <Text variant="titleMedium" style={styles.demoTitle} accessibilityRole="header">{t('auth.demoAccount.title')}</Text>
               <Text variant="bodyMedium" style={styles.subtitle}>{t('auth.demoAccount.body')}</Text>
@@ -185,7 +214,7 @@ export function AuthScreen() {
             </View>
           ) : null}
 
-          <InfoNote icon="flask-outline" text={t('auth.demoNote')} />
+          {!realAuth ? <InfoNote icon="flask-outline" text={t('auth.demoNote')} /> : null}
 
           <AppButton mode="text" disabled={pending} onPress={continueAsGuest}>{t('auth.guest')}</AppButton>
         </ScrollView>

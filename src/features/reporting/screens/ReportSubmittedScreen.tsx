@@ -9,15 +9,14 @@ import { AppButton } from '../../../shared/components/AppButton';
 import { InfoNote } from '../../../shared/components/InfoNote';
 import { StepLayout } from '../../../shared/layouts/StepLayout';
 import { tokens } from '../../../shared/theme/tokens';
-import { AnalysisSummary } from '../../incident-ai';
 import { useReportDraft } from '../reportDraft';
 
 type Props = NativeStackScreenProps<ReportStackParamList, 'ReportSubmitted'>;
 
 export function ReportSubmittedScreen({ navigation }: Props) {
-  const { t } = useTranslation('reporting');
+  const { t, i18n } = useTranslation('reporting');
   const { t: tc } = useTranslation();
-  const { draft, receipt, reset } = useReportDraft();
+  const { receipt, reset } = useReportDraft();
   const rootNavigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   // Clear the in-memory draft and leave a fresh form behind, then go to the requested tab.
@@ -49,11 +48,12 @@ export function ReportSubmittedScreen({ navigation }: Props) {
           <Card mode="outlined" style={styles.card}>
             <Card.Content style={styles.cardContent}>
               <Text variant="labelLarge" style={styles.label}>{t('submitted.yourWords')}</Text>
-              <Text variant="bodyLarge" style={styles.words}>{draft.description.trim()}</Text>
+              <Text variant="bodyLarge" style={styles.words}>{receipt.originalText}</Text>
             </Card.Content>
           </Card>
 
-          <AnalysisSummary analysis={receipt.analysis} />
+          <Text selectable variant="bodyLarge">{t('submitted.reportId', { id: receipt.reportId })}</Text>
+          <Text variant="bodyLarge">{t('submitted.submittedAt', { time: new Date(receipt.submittedAt).toLocaleString(i18n.language) })}</Text>
           <InfoNote icon="shield-check-outline" text={t('submitted.next')} />
         </>
       ) : null}

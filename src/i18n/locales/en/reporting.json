@@ -35,11 +35,12 @@
     "subtitle": "Approximate is fine, and both are optional.",
     "whenLabel": "When did it happen?",
     "options": {
-      "just_now": "Just now",
-      "today": "Earlier today",
-      "yesterday": "Yesterday",
-      "this_week": "This week",
-      "earlier": "Earlier / not sure"
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "night": "Night",
+      "late_night": "Late night",
+      "not_sure": "Time unknown"
     },
     "whereLabel": "Where did it happen?",
     "whereHint": "Only an approximate area is used, never your exact spot.",
@@ -52,7 +53,11 @@
     "remove": "Remove",
     "denied": "Location permission is off. You can choose a district instead.",
     "unavailable": "We couldn't get your location. You can choose a district instead.",
-    "districtTitle": "Choose a district"
+    "districtTitle": "Choose a district",
+    "dateLabel": "Incident date (YYYY-MM-DD, optional)",
+    "clockLabel": "Clock time (HH:mm, 24-hour, optional)",
+    "dateHint": "Times use Sri Lanka time (UTC+05:30). A date needs a clock time; the server cannot store a date alone. If you only know a period, leave date and clock time blank. Nothing is inferred.",
+    "invalidTime": "Enter a valid date and 24-hour time. A date needs a clock time. Choose either a clock time or a period, not both."
   },
   "details": {
     "title": "Anything else?",
@@ -62,19 +67,6 @@
       "well_lit": "Well lit",
       "dim": "Dim",
       "dark": "Dark",
-      "unsure": "Not sure"
-    },
-    "crowd": "How busy was it?",
-    "crowdOptions": {
-      "empty": "Almost empty",
-      "few": "A few people",
-      "crowded": "Crowded",
-      "unsure": "Not sure"
-    },
-    "others": "Were other people nearby?",
-    "othersOptions": {
-      "yes": "Yes",
-      "no": "No",
       "unsure": "Not sure"
     }
   },
@@ -86,20 +78,21 @@
     "extra": "Extra details",
     "notProvided": "Not provided",
     "privacy": "Your description stays private. The public map only shows an approximate area and report counts.",
-    "aiNote": "AI will suggest a category and seriousness. These are estimates and can be wrong.",
     "submit": "Submit report",
-    "submitting": "Analysing your report…",
+    "submitting": "Submitting your report.",
     "errorTitle": "We couldn't submit your report",
     "errorBody": "Your report is still on this device. Please try again.",
-    "invalid": "Your description needs a little more detail before it can be submitted."
+    "invalid": "Check the report description, date, time, location and application language."
   },
   "submitted": {
     "title": "Report received",
     "subtitle": "Thank you for sharing this.",
     "yourWords": "Your words",
-    "next": "Before a report appears on the map it may be checked for duplicates or unusual patterns. That is not a judgement about you.",
+    "next": "Your report was saved. This confirmation does not indicate an AI analysis result.",
     "viewMap": "View safety map",
-    "empty": "There is no report to show."
+    "empty": "There is no report to show.",
+    "reportId": "Report ID: {{id}}",
+    "submittedAt": "Submitted: {{time}}"
   },
   "districts": {
     "colombo": "Colombo",
@@ -136,5 +129,19 @@
   },
   "aside": {
     "title": "Good to know"
+  },
+  "auth": {
+    "title": "Log in to report an incident",
+    "body": "Incident reports require an authenticated account. You can still explore the public safety map.",
+    "login": "Log in"
+  },
+  "errors": {
+    "unauthorized": "Please log in again before submitting your report.",
+    "forbidden": "This account is not permitted to submit reports. Check your account verification or contact support.",
+    "validation": "Check the report description, date, time, location and application language.",
+    "rateLimit": "Too many requests. Wait before submitting again.",
+    "uncertain": "Submission could not be confirmed. It may already have been saved. Submitting again could create a duplicate.",
+    "accountChanged": "The account changed. Please review the report in your current account.",
+    "generic": "The report could not be submitted. Your draft is still available while you remain logged in."
   }
 }

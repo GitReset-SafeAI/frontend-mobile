@@ -7,8 +7,8 @@ import { AppButton } from '../../../shared/components/AppButton';
 import { ChoiceGroup } from '../../../shared/components/ChoiceGroup';
 import { StepLayout } from '../../../shared/layouts/StepLayout';
 import { tokens } from '../../../shared/theme/tokens';
-import type { CrowdLevel, LightingLevel, NearbyAnswer } from '../../../services/contracts';
-import { crowdLevels, lightingLevels, nearbyAnswers } from '../../../services/contracts/incident';
+import type { LightingLevel } from '../../../services/contracts';
+import { lightingLevels } from '../../../services/contracts/incident';
 import { useReportDraft } from '../reportDraft';
 
 type Props = NativeStackScreenProps<ReportStackParamList, 'ReportDetails'>;
@@ -17,7 +17,7 @@ export function ReportDetailsScreen({ navigation }: Props) {
   const { t } = useTranslation('reporting');
   const { t: tc } = useTranslation();
   const { draft, update } = useReportDraft();
-  const answered = Boolean(draft.lighting || draft.crowd || draft.othersNearby);
+  const answered = Boolean(draft.lighting);
 
   return (
     <StepLayout
@@ -39,18 +39,6 @@ export function ReportDetailsScreen({ navigation }: Props) {
           options={lightingLevels.map((value) => ({ value, label: t(`details.lightingOptions.${value}`) }))}
           value={draft.lighting}
           onChange={(lighting) => { update({ lighting }); }}
-        />
-        <ChoiceGroup<CrowdLevel>
-          label={t('details.crowd')}
-          options={crowdLevels.map((value) => ({ value, label: t(`details.crowdOptions.${value}`) }))}
-          value={draft.crowd}
-          onChange={(crowd) => { update({ crowd }); }}
-        />
-        <ChoiceGroup<NearbyAnswer>
-          label={t('details.others')}
-          options={nearbyAnswers.map((value) => ({ value, label: t(`details.othersOptions.${value}`) }))}
-          value={draft.othersNearby}
-          onChange={(othersNearby) => { update({ othersNearby }); }}
         />
       </View>
     </StepLayout>

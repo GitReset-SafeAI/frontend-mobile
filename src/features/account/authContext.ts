@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 
-import type { LogInInput, SignUpInput, User } from '../../services/contracts';
+import type { LogInInput, RegistrationInput, SignUpInput, User } from '../../services/contracts';
+import type { ApiError } from '../../services/api/ApiError';
 
 export type AuthMode = 'login' | 'signup';
 
@@ -8,10 +9,11 @@ export interface AuthContextValue {
   // `loading` only until the first session check resolves.
   status: 'loading' | 'ready';
   user: User | null;
-  // True after "Continue without an account". Reporting and the map work without one; SOS needs contacts.
+  error: ApiError | null;
+  // True after "Continue without an account". The map is public; reporting requires login.
   guest: boolean;
   logIn: (input: LogInInput) => Promise<User>;
-  signUp: (input: SignUpInput) => Promise<User>;
+  signUp: (input: SignUpInput | RegistrationInput) => Promise<User | null>;
   logOut: () => Promise<void>;
   continueAsGuest: () => void;
   // Which tab the login screen opens on. Set by whoever sends a guest there.

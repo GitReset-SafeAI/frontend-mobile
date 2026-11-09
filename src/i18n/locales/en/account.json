@@ -27,14 +27,25 @@
       "passwordRequired": "Please enter your password.",
       "notFound": "We couldn't find an account with that email. Check it, or create an account.",
       "conflict": "An account with this email already exists. Try logging in.",
-      "generic": "Something went wrong. Please try again."
+      "generic": "Something went wrong. Please try again.",
+      "nic": "Enter a valid NIC number.",
+      "phone_number": "Enter a valid Sri Lankan phone number.",
+      "credentials": "The email or password is incorrect.",
+      "unconfirmed": "Confirm your email before logging in.",
+      "rateLimit": "Too many attempts. Please wait before trying again.",
+      "validation": "Something went wrong. Please try again.",
+      "restore": "Unable to reach authentication. Check your connection and try again.",
+      "configuration": "Authentication or secure storage is unavailable. Check the app configuration, unlock your device, and try again."
     },
     "demoAccount": {
       "title": "Just exploring?",
       "body": "Use the demo account. It comes with two sample contacts, and any password works. Sample numbers are placeholders: add your own number to test dialling.",
       "button": "Use demo account"
     },
-    "guest": "Continue without an account"
+    "guest": "Continue without an account",
+    "nic": "NIC number",
+    "phone": "Phone number",
+    "registered": "If registration was successful, check your email for a confirmation link if required, then log in."
   },
   "account": {
     "title": "Your account",
@@ -44,7 +55,8 @@
     "loading": "Loading your account…",
     "signedInAs": "Signed in as {{email}}",
     "guestTitle": "Log in to add emergency contacts",
-    "guestBody": "SOS calls the people you choose. You can still report incidents and view the map without an account."
+    "guestBody": "SOS calls the people you choose. You can view the map without an account. Log in to report incidents.",
+    "logoutError": "Could not log out. Please try again."
   },
   "contacts": {
     "title": "Emergency contacts",
@@ -81,12 +93,22 @@
       "name": "Please enter a name.",
       "phone": "Enter a valid Sri Lankan phone number.",
       "limit": "You can add up to {{max}} contacts.",
-      "generic": "We couldn't save that. Please try again."
+      "generic": "We couldn't save that. Please try again.",
+      "validation": "Check the contact name and Sri Lankan phone number.",
+      "unauthorized": "Please log in again to manage your emergency contacts.",
+      "forbidden": "You do not have permission to manage these contacts.",
+      "notFound": "This contact is no longer available. Refresh the list and try again.",
+      "connection": "Unable to load or confirm contacts. Check your connection and refresh the list.",
+      "unavailable": "Emergency contacts are unavailable in this app configuration.",
+      "accountChanged": "Your account changed. Please try again."
     },
     "removeTitle": "Remove {{name}}?",
     "removeBody": "SOS will no longer call this person.",
     "removeConfirm": "Yes, remove",
     "privacy": "Contacts are only used to place a call from your phone when you use SOS. SafeStep never contacts them for you.",
-    "demoStorage": "Demo: contacts are saved only in this browser."
+    "demoStorage": "Demo: contacts are saved only in this browser.",
+    "notConnected": "Emergency contacts are currently unavailable.",
+    "retry": "Retry",
+    "serverStorage": "Emergency contacts are saved privately to your account."
   }
 }

@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 
 import type { ReportStackParamList } from '../../app/navigation/navigation.types';
 import { tokens } from '../../shared/theme/tokens';
+import { AppButton } from '../../shared/components/AppButton';
+import { StepLayout } from '../../shared/layouts/StepLayout';
+import { useAuth } from '../account/authContext';
 import { SosPill } from '../emergency';
-import { ReportDraftProvider } from './reportDraft';
 import { ReportDescribeScreen } from './screens/ReportDescribeScreen';
 import { ReportDetailsScreen } from './screens/ReportDetailsScreen';
 import { ReportReviewScreen } from './screens/ReportReviewScreen';
@@ -18,8 +20,13 @@ const renderSos = () => <SosPill />;
 // survives switching tabs mid-report, and is cleared on Done or Start over.
 export function ReportNavigator() {
   const { t } = useTranslation('reporting');
+  const { user, requestLogin } = useAuth();
+  if (!user) return (
+    <StepLayout title={t('auth.title')} subtitle={t('auth.body')}>
+      <AppButton mode="contained" onPress={() => { requestLogin(); }}>{t('auth.login')}</AppButton>
+    </StepLayout>
+  );
   return (
-    <ReportDraftProvider>
       <Stack.Navigator
         screenOptions={{
           title: t('headerTitle'),
@@ -42,6 +49,5 @@ export function ReportNavigator() {
           options={{ headerBackVisible: false, gestureEnabled: false }}
         />
       </Stack.Navigator>
-    </ReportDraftProvider>
   );
 }

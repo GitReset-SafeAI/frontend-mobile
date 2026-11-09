@@ -5,6 +5,7 @@ import { services } from '../../../services';
 import type { ContactInput } from '../../../services/contracts';
 import { queryKeys } from '../../../services/queryKeys';
 import { useAuth } from '../authContext';
+import { ApiError } from '../../../services/api/ApiError';
 
 // Mock data is local, so the demo also works offline.
 const networkMode = env.dataMode === 'mock' ? 'always' : 'online';
@@ -14,7 +15,7 @@ export function useContacts() {
   const { user } = useAuth();
   return useQuery({
     queryKey: [...queryKeys.contacts, user?.id],
-    queryFn: () => services.contacts.list(),
+    queryFn: ({ signal }) => services.contacts.list({ userId: user?.id, signal }),
     enabled: Boolean(user),
     networkMode,
   });
@@ -22,15 +23,26 @@ export function useContacts() {
 
 export function useContactMutations() {
   const queryClient = useQueryClient();
-  const invalidate = () => queryClient.invalidateQueries({ queryKey: queryKeys.contacts });
+  const { user } = useAuth();
+  const ownerId = user?.id;
+  const invalidate = () => queryClient.invalidateQueries({ queryKey: [...queryKeys.contacts, ownerId], exact: true });
+  const context = () => {
+    if (!ownerId) throw new ApiError('unauthorized', 'Please log in to manage emergency contacts.', 401);
+    return { userId: ownerId };
+  };
+  // Reconcile with the server even after a timeout: a write may already have committed.
+  // No optimistic updates, offline persistence, or automatic mutation retries.
+  const options = { onSettled: invalidate, networkMode, retry: false } as const;
   return {
-    add: useMutation({ mutationFn: (input: ContactInput) => services.contacts.add(input), onSuccess: invalidate, networkMode }),
+    add: useMutation({ ...options, mutationKey: [...queryKeys.contacts, ownerId, 'add'],
+      mutationFn: (input: ContactInput) => services.contacts.add(input, context()) }),
     update: useMutation({
-      mutationFn: ({ id, input }: { id: string; input: ContactInput }) => services.contacts.update(id, input),
-      onSuccess: invalidate,
-      networkMode,
+      ...options, mutationKey: [...queryKeys.contacts, ownerId, 'update'],
+      mutationFn: ({ id, input }: { id: string; input: ContactInput }) => services.contacts.update(id, input, context()),
     }),
-    remove: useMutation({ mutationFn: (id: string) => services.contacts.remove(id), onSuccess: invalidate, networkMode }),
-    makePrimary: useMutation({ mutationFn: (id: string) => services.contacts.makePrimary(id), onSuccess: invalidate, networkMode }),
+    remove: useMutation({ ...options, mutationKey: [...queryKeys.contacts, ownerId, 'remove'],
+      mutationFn: (id: string) => services.contacts.remove(id, context()) }),
+    makePrimary: useMutation({ ...options, mutationKey: [...queryKeys.contacts, ownerId, 'primary'],
+      mutationFn: (id: string) => services.contacts.makePrimary(id, context()) }),
   };
 }
