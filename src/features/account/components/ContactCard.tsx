@@ -81,7 +81,7 @@ export function ContactCard({ contact, isPrimary, busy = false, onEdit, onRemove
 }
 
 const styles = StyleSheet.create({
-  card: { borderColor: tokens.colors.border, backgroundColor: tokens.colors.surface },
+  card: { borderColor: tokens.colors.border, backgroundColor: tokens.colors.surface, borderRadius: tokens.radii.lg, ...tokens.shadows.card },
   content: { gap: tokens.spacing.sm },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: tokens.spacing.sm },
   identity: { flex: 1 },

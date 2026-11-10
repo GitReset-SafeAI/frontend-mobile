@@ -74,8 +74,25 @@ export const tokens = {
   touchTarget: 48,
   touchTargetLarge: 64,
   typography: {
-    title: { fontSize: 28, lineHeight: 40 },
+    display: { fontSize: 32, lineHeight: 40, fontWeight: '600' as const },
+    title: { fontSize: 28, lineHeight: 36, fontWeight: '600' as const },
     body: { fontSize: 16, lineHeight: 28 },
     label: { fontSize: 14, lineHeight: 24 },
+  },
+  shadows: {
+    card: {
+      shadowColor: colors.navy,
+      shadowOpacity: 0.08,
+      shadowRadius: 14,
+      shadowOffset: { width: 0, height: 8 },
+      elevation: 3,
+    },
+    lift: {
+      shadowColor: colors.navy,
+      shadowOpacity: 0.16,
+      shadowRadius: 22,
+      shadowOffset: { width: 0, height: 12 },
+      elevation: 6,
+    },
   },
 } as const;

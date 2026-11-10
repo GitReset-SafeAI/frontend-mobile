@@ -78,7 +78,7 @@ export function SectionCard({
 }
 
 const styles = StyleSheet.create({
-  card: { borderColor: tokens.colors.border, backgroundColor: tokens.colors.surface },
+  card: { borderColor: tokens.colors.border, backgroundColor: tokens.colors.surface, borderRadius: tokens.radii.lg, ...tokens.shadows.card },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     borderRadius: tokens.radii.sm,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: tokens.colors.homeGradientStart,
+    backgroundColor: tokens.colors.mintSoft,
   },
   headerText: { flex: 1, gap: 2 },
   chevron: { paddingHorizontal: tokens.spacing.sm },

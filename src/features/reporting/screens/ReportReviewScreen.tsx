@@ -128,7 +128,7 @@ export function ReportReviewScreen({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  card: { borderColor: tokens.colors.border, backgroundColor: tokens.colors.surface },
+  card: { borderColor: tokens.colors.border, backgroundColor: tokens.colors.surface, borderRadius: tokens.radii.lg, ...tokens.shadows.card },
   cardContent: { gap: tokens.spacing.xs },
   cardHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   cardTitle: { flex: 1, color: tokens.colors.navy },

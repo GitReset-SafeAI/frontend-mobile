@@ -216,6 +216,6 @@ const styles = StyleSheet.create({
   brandText: { flex: 1, gap: tokens.spacing.xs },
   heading: { color: tokens.colors.primaryDark },
   muted: { color: tokens.colors.textSecondary },
-  card: { borderColor: tokens.colors.border },
+  card: { borderColor: tokens.colors.border, borderRadius: tokens.radii.lg, ...tokens.shadows.card },
   errorCard: { borderColor: tokens.colors.status.error },
 });

@@ -43,7 +43,13 @@ export function MainTabs() {
         tabBarActiveTintColor: tokens.colors.navy,
         tabBarInactiveTintColor: tokens.colors.textSecondary,
         tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
-        tabBarStyle: { backgroundColor: tokens.colors.surface, borderTopColor: tokens.colors.border },
+        tabBarStyle: {
+          height: 68,
+          paddingTop: tokens.spacing.xs,
+          paddingBottom: tokens.spacing.sm,
+          backgroundColor: tokens.colors.surface,
+          borderTopColor: tokens.colors.border,
+        },
         tabBarIcon: ({ color, size }) => <Icon source={tabIcons[route.name]} color={color} size={size} />,
       })}
     >

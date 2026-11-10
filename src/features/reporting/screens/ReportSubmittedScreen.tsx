@@ -64,7 +64,7 @@ export function ReportSubmittedScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
   footer: { flex: 1, gap: tokens.spacing.sm },
   success: { alignItems: 'flex-start' },
-  card: { borderColor: tokens.colors.border, backgroundColor: tokens.colors.surface },
+  card: { borderColor: tokens.colors.border, backgroundColor: tokens.colors.surface, borderRadius: tokens.radii.lg, ...tokens.shadows.card },
   cardContent: { gap: tokens.spacing.xs },
   label: { color: tokens.colors.textSecondary },
   words: { color: tokens.colors.textPrimary },

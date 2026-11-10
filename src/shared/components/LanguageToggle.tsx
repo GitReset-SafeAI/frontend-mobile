@@ -26,6 +26,7 @@ export function LanguageToggle() {
         icon="translate"
         textColor={tokens.colors.navy}
         contentStyle={styles.content}
+        style={styles.button}
         accessibilityLabel={`${t('language')}: ${languageNames[current]}`}
         onPress={() => { setOpen(true); }}
       >
@@ -65,6 +66,7 @@ export function LanguageToggle() {
 
 const styles = StyleSheet.create({
   content: { minHeight: tokens.touchTarget },
+  button: { borderRadius: tokens.radii.pill },
   backdrop: { flex: 1, justifyContent: 'flex-end' },
   scrim: { position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, backgroundColor: `${tokens.colors.textPrimary}99` },
   sheet: {

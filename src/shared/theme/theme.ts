@@ -5,7 +5,7 @@ import { tokens } from './tokens';
 export const theme: MD3Theme = {
   ...MD3LightTheme,
   dark: false,
-  roundness: tokens.radii.sm,
+  roundness: tokens.radii.lg,
   colors: {
     primary: tokens.colors.navy,
     onPrimary: tokens.colors.textOnDark,
@@ -53,8 +53,14 @@ export const theme: MD3Theme = {
   },
   fonts: configureFonts({
     config: {
+      displayLarge: tokens.typography.display,
+      displayMedium: tokens.typography.display,
+      displaySmall: tokens.typography.title,
+      headlineLarge: tokens.typography.title,
       headlineMedium: tokens.typography.title,
+      headlineSmall: tokens.typography.title,
       bodyLarge: tokens.typography.body,
+      bodyMedium: tokens.typography.body,
       labelLarge: tokens.typography.label,
     },
   }),

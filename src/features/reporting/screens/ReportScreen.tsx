@@ -20,6 +20,6 @@ export function ReportScreen() {
 }
 
 const styles = StyleSheet.create({
-  card: { borderColor: tokens.colors.border },
+  card: { borderColor: tokens.colors.border, borderRadius: tokens.radii.lg, ...tokens.shadows.card },
   heading: { color: tokens.colors.primaryDark },
 });
