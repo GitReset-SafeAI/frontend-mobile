@@ -32,7 +32,7 @@ export function ServiceStatusCard() {
 }
 
 const styles = StyleSheet.create({
-  card: { borderColor: tokens.colors.border },
+  card: { borderColor: tokens.colors.border, borderRadius: tokens.radii.lg, ...tokens.shadows.card },
   heading: { color: tokens.colors.primaryDark },
   error: { color: tokens.colors.status.error },
   content: { gap: tokens.spacing.sm },

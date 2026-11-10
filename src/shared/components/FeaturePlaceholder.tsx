@@ -41,7 +41,7 @@ export function FeaturePlaceholder({ title, description, icon, children }: Featu
 const styles = StyleSheet.create({
   brand: { flexDirection: 'row', alignItems: 'center', gap: tokens.spacing.md },
   brandText: { flex: 1, gap: tokens.spacing.xs },
-  card: { borderColor: tokens.colors.border },
+  card: { borderColor: tokens.colors.border, borderRadius: tokens.radii.lg, ...tokens.shadows.card },
   cardContent: { gap: tokens.spacing.md },
   status: { color: tokens.colors.primary },
   heading: { color: tokens.colors.primaryDark },

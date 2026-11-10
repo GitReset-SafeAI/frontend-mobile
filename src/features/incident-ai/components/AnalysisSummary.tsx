@@ -73,7 +73,7 @@ export function AnalysisSummary({ analysis }: { analysis: IncidentAnalysis }) {
 }
 
 const styles = StyleSheet.create({
-  card: { borderColor: tokens.colors.border, backgroundColor: tokens.colors.surface },
+  card: { borderColor: tokens.colors.border, backgroundColor: tokens.colors.surface, borderRadius: tokens.radii.lg, ...tokens.shadows.card },
   content: { gap: tokens.spacing.md },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: tokens.spacing.sm },
   title: { flex: 1, color: tokens.colors.navy },

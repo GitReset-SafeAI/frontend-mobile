@@ -25,7 +25,7 @@ export function SosPill() {
 const styles = StyleSheet.create({
   pill: {
     minWidth: tokens.touchTarget,
-    minHeight: 40,
+    minHeight: tokens.touchTarget,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: tokens.spacing.md,
