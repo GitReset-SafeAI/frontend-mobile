@@ -4,6 +4,7 @@ process.env.EXPO_PUBLIC_AUTH_MODE = 'demo';
 process.env.EXPO_PUBLIC_SUPABASE_URL = '';
 process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY = '';
 process.env.EXPO_PUBLIC_API_BASE_URL = '';
+process.env.EXPO_PUBLIC_APP_URL = '';
 
 jest.mock('react-native-safe-area-context', () =>
   jest.requireActual('react-native-safe-area-context/jest/mock').default);
@@ -41,9 +42,10 @@ jest.mock('react-native-maps', () => {
 });
 
 jest.mock('expo-location', () => ({
-  Accuracy: { Balanced: 3 },
+  Accuracy: { Balanced: 3, High: 4 },
   requestForegroundPermissionsAsync: jest.fn(async () => ({ granted: false })),
   getCurrentPositionAsync: jest.fn(async () => ({ coords: { latitude: 0, longitude: 0 } })),
+  watchPositionAsync: jest.fn(async () => ({ remove: jest.fn() })),
 }));
 
 // Secure storage is native. An in-memory stand-in keeps the demo account tests deterministic, and every test

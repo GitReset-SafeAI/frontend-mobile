@@ -3,7 +3,6 @@ import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 import { tokens } from '../../../shared/theme/tokens';
-import { SOS_COUNTDOWN_SECONDS } from '../sos';
 
 interface SosButtonProps {
   onPress: () => void;
@@ -24,7 +23,7 @@ export function SosButton({ onPress }: SosButtonProps) {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t('sosA11yLabel')}
-          accessibilityHint={t('sosA11yHint', { seconds: SOS_COUNTDOWN_SECONDS })}
+          accessibilityHint={t('sosA11yHint')}
           onPress={onPress}
           style={({ pressed }) => [
             styles.button,

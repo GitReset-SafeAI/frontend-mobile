@@ -126,7 +126,7 @@ export const supabaseAuth: AuthService = {
       else listener(validSession(session) ? mapUser(session.user) : null);
     });
     let active = true;
-    const refresh = (state: string) => {
+    const refresh = (state: string | null | undefined) => {
       refreshLifecycle = refreshLifecycle.then(async () => {
         if (active && state === 'active') await client.auth.startAutoRefresh();
         else await client.auth.stopAutoRefresh();

@@ -20,7 +20,7 @@ It is hard to know whether an unfamiliar road, bus stop or public place is safe 
 2. **AI analysis** classifies the report: incident type, provisional severity, confidence and missing details. It is always shown as an estimate, separate from the user's own words.
 3. **See what has been reported** on the Safety Map: aggregated, privacy-protected areas, never individual reports or exact locations.
 4. **Plan a journey.** Compare routes by how many reported areas they pass through, including a route that avoids every reported area and what it costs in time.
-5. **SOS.** One large button starts a 5-second cancellable countdown, then dials your chosen primary emergency contact from your own phone. It never calls the police and never claims anyone has been alerted.
+5. **SOS.** Choose an emergency contact, then open your phone's dialer or an SMS draft with a link to your shared location.
 
 SafeStep does not track people and never claims that a place or route is safe.
 
@@ -31,9 +31,9 @@ Status reflects the code in this repository.
 | Feature | Status |
 | --- | --- |
 | Four tabs: Home (SOS), Report, Safety Map, Account; an SOS pill in every header | Implemented |
-| SOS: 5-second cancellable countdown, then dials the primary contact. With no contact it says so and dials nothing | Implemented |
-| Account: up to 5 emergency contacts (name, Sri Lankan phone number, optional relationship), make primary, edit, remove, call, log out | Implemented (demo accounts, stored on the device) |
-| Login and sign-up, or continue without an account | Implemented as a **demo** (no real authentication) |
+| SOS: select a contact, call, or prepare an SMS with a 30-minute tracking link | Implemented. Live location sharing requires a real account and the backend |
+| Account: up to 5 emergency contacts (name, Sri Lankan phone number, optional relationship), make primary, edit, remove, call, log out | Stored on the backend with real accounts in API mode, or on the device in demo mode |
+| Login and sign-up, or continue without an account | Demo and Supabase authentication |
 | Report flow: Describe, When & where (approximate location or district), Details, Review, Result | Implemented |
 | Voice input with transcript confirmation | **Demo:** records no audio and returns a sample transcript |
 | AI estimate of a report (category, severity, confidence, extracted details, what is missing) | **Mock:** keyword-based, labelled as demo in the UI |
@@ -41,7 +41,6 @@ Status reflects the code in this repository.
 | Journey planner: place search, walking or driving, route comparison, recommended / lowest-exposure / clear route | Implemented; live backend in API mode, synthetic routes in mock mode |
 | English, සිංහල and தமிழ் interface, including the map's strings (a test fails if a string is missing in any language) | Implemented |
 | Accessibility: large touch targets, status never by colour alone, screen-reader labels | Implemented |
-| Real login, real report submission and contact storage against the backend | **Not implemented** in this app; use the web platform |
 | Live journey sharing | Web platform only |
 
 ## AI usage
@@ -89,7 +88,7 @@ Copy `.env.example` to `.env` to change anything. All `EXPO_PUBLIC_*` values are
 | Mode | `EXPO_PUBLIC_DATA_MODE` | Behaviour |
 | --- | --- | --- |
 | Mock (default) | `mock` | Everything uses clearly labelled sample data |
-| API | `api` | The Safety Map, place search and route comparison call the backend. Reports, authentication, contacts and voice **fail explicitly** with "not implemented" and never fall back to fake data |
+| API | `api` | The Safety Map, place search and route comparison call the backend. Set auth mode to `supabase` for backend emergency contacts and SOS location sharing |
 
 To use the live map:
 
@@ -110,7 +109,22 @@ A phone cannot reach `127.0.0.1`; use your computer's LAN address. The backend s
 
 On the login screen, tap **Use demo account** (or log in as `demo@safestep.lk` with any password), or choose **Create account** with any name, email and 8+ character password. No password is read, checked or stored. The demo account has two sample contacts with placeholder numbers; add your own to test dialling. Accounts and contacts are kept in the device's secure storage (Keychain / Keystore). Do not enter real people's numbers.
 
-The iOS simulator cannot place calls, so SOS shows "Call started" without ringing anyone. A real phone will dial, so cancel the countdown if you do not mean to call.
+### SOS location sharing
+
+Set these values in `frontend-mobile/.env` and restart Expo:
+
+```dotenv
+EXPO_PUBLIC_DATA_MODE=api
+EXPO_PUBLIC_AUTH_MODE=supabase
+EXPO_PUBLIC_API_BASE_URL=https://your-backend.example
+EXPO_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+EXPO_PUBLIC_APP_URL=https://your-web-frontend.example
+```
+
+Use the same Supabase project and running backend as the web app. The web frontend address must be reachable by the recipient and serve `/track/<share-id>` against that backend. Use a public HTTPS address for recipients outside your development network.
+
+On a physical phone, sign in, add a contact, and tap **SOS** → **Send location**. Grant location access, review the draft in Messages, and press **Send**. If the SMS app drops the body, press and hold the message preview to copy it. Return to SOS to keep updating the location while the app is in the foreground. **Stop sharing location** ends the link. The link expires after 30 minutes.
 
 ### Checks
 
@@ -132,7 +146,7 @@ src/
   app/            providers and navigation (root stack, bottom tabs)
   config/         validated public environment, map config
   features/
-    emergency/    Home, SOS button, countdown, SOS pill
+    emergency/    Home, SOS contact selection, calls, SMS location sharing, SOS pill
     account/      login, account, emergency contacts
     reporting/    report draft, 5 steps, voice modal, district picker
     incident-ai/  AI-estimate summary and category labels
@@ -152,7 +166,7 @@ Screens use hooks and never import fixtures; `src/services/index.ts` chooses moc
 - Report drafts live in memory and are cleared when you finish.
 - Demo accounts and contacts stay on the device in secure storage.
 - No secrets are in this repository or bundled in the app.
-- SOS places a call from your own phone to your own contact. SafeStep does not contact anyone for you.
+- SOS opens the phone or Messages for the contact you choose. Anyone with an active tracking link can view the latest shared location until you stop sharing or the link expires.
 - Use fictional data when testing.
 
 ## AI-assisted development disclosure

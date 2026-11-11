@@ -51,7 +51,7 @@ export function RootNavigator() {
         ) : (
           <>
             <Stack.Screen name="MainTabs" component={MainTabs} />
-            {/* Full-screen and gesture-free: leaving is an explicit Cancel/Close, or Android Back. */}
+            {/* Full-screen and gesture-free. Close or Android Back leaves SOS. */}
             <Stack.Screen
               name="Sos"
               component={SosScreen}

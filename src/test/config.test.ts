@@ -23,6 +23,12 @@ describe('public configuration', () => {
     expect(() => parseEnvironment({ apiBaseUrl: 'file:///example' })).toThrow();
   });
 
+  it('takes the SOS tracking address as a web origin', () => {
+    expect(parseEnvironment({ publicAppUrl: 'https://web.example.invalid' }).publicAppUrl)
+      .toBe('https://web.example.invalid');
+    expect(() => parseEnvironment({ publicAppUrl: 'https://web.example.invalid/track' })).toThrow();
+  });
+
   it('uses a valid country overview without incident data', () => {
     expect(mapsConfig.provider).toBe('platform-default');
     expect(mapsConfig.initialRegion.latitude).toBeGreaterThan(5);

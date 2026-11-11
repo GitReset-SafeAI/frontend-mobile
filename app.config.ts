@@ -5,9 +5,6 @@ import type { ExpoConfig } from 'expo/config';
 // is kept out of version control all the same.
 const androidMapsApiKey = process.env.GOOGLE_MAPS_ANDROID_API_KEY ?? '';
 
-// Expo compiles only this config file. Node 24 loads shared TS via an explicit extension.
-const { tokens }: typeof import('./src/shared/theme/tokens') = require('./src/shared/theme/tokens.ts');
-
 const config: ExpoConfig = {
   name: 'SafeStep',
   slug: 'safestep',
@@ -18,7 +15,7 @@ const config: ExpoConfig = {
   ios: { supportsTablet: true },
   android: {
     adaptiveIcon: {
-      backgroundColor: tokens.colors.screenBackground,
+      backgroundColor: '#FEFCF7',
       foregroundImage: './assets/android-icon-foreground.png',
       backgroundImage: './assets/android-icon-background.png',
       monochromeImage: './assets/android-icon-monochrome.png',
@@ -38,7 +35,7 @@ const config: ExpoConfig = {
       enableBackgroundPlayback: false,
     }],
     ['expo-location', {
-      locationWhenInUsePermission: 'Allow SafeStep to use your location when you choose your current position.',
+      locationWhenInUsePermission: 'Allow SafeStep to use your location when you choose your current position or share it with an emergency contact.',
       isIosBackgroundLocationEnabled: false,
       isAndroidBackgroundLocationEnabled: false,
     }],
