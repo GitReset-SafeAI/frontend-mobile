@@ -60,7 +60,7 @@
   },
   "contacts": {
     "title": "Emergency contacts",
-    "subtitle": "SOS calls your first contact. Add up to {{max}} people you trust.",
+    "subtitle": "Your primary contact is selected first in SOS. Add up to {{max}} people you trust.",
     "count": "{{count}} of {{max}}",
     "empty": "No contacts yet. Add someone you trust so SOS knows who to call.",
     "add": "Add a contact",

@@ -1,41 +1,50 @@
 {
   "homeCaption": "Tap for emergency help",
-  "homeHint": "Calls your emergency contact after a {{seconds}}-second countdown. You can cancel.",
+  "homeHint": "Choose Call or Send location. Your phone asks you to confirm the call or send the SMS.",
   "sosLabel": "SOS",
   "sosA11yLabel": "SOS. Emergency help",
-  "sosA11yHint": "Starts a {{seconds}} second countdown, then calls your emergency contact. You can cancel.",
-  "countdownTitle": "Calling {{name}} in",
-  "secondsLabel_one": "second",
-  "secondsLabel_other": "seconds",
-  "announceStart": "Calling {{name}} in {{seconds}} seconds. Press Cancel to stop.",
-  "callNow": "Call now",
-  "cancel": "Cancel",
-  "disclaimer": "SafeStep does not alert anyone for you. This places a call from your phone to your emergency contact.",
-  "dialingTitle": "Opening your phone…",
-  "calledTitle": "Call started",
-  "calledBody": "If the call did not connect, try again.",
-  "callAgain": "Call {{name}} again",
-  "callContact": "Call {{name}}",
+  "sosA11yHint": "Opens Call and Send location options for your emergency contact.",
   "close": "Close",
-  "failedTitle": "We couldn't open the phone",
   "failedBody": "Please dial {{number}} on your phone now.",
+  "none": {
+    "title": "Add an emergency contact first",
+    "loggedOut": "Log in and add someone you trust so you can call them or send your location.",
+    "noContacts": "Add someone you trust so you can call them or send your location.",
+    "login": "Log in",
+    "signup": "Create account",
+    "add": "Add a contact"
+  },
+  "sms": {
+    "choose": "How would you like to get help?",
+    "contact": "Emergency contact",
+    "call": "Call",
+    "sendLocation": "Send location",
+    "preparing": "Getting location and preparing SMS…",
+    "draftReady": "SMS draft ready. Review it and press Send in Messages.",
+    "preview": "Message preview",
+    "reopen": "Open SMS draft",
+    "sharingNote": "Keep this screen open and return after sending. Location updates can pause while Messages is open or your phone is locked. Sharing expires after 30 minutes.",
+    "stop": "Stop sharing location",
+    "costNote": "Your mobile plan’s SMS charges may apply. The recipient can open the tracking link in a browser.",
+    "errors": {
+      "account": "Log in with a real account to share your location.",
+      "location": "Location is unavailable. Enable location services and allow SafeStep to access your location. You can still use Call.",
+      "network": "Location sharing could not be updated. Check your connection; the recipient may only see the last received position.",
+      "composer": "The SMS app could not be opened. Try Open SMS draft again, or press and hold the preview to copy the message.",
+      "stop": "Updates have stopped on this device, but the server could not confirm ending the link. Try Stop sharing again; otherwise the link expires automatically.",
+      "expired": "Location sharing has expired. Choose Send location to create a new SMS and tracking link.",
+      "configuration": "Location sharing is unavailable. The app needs a backend and a web tracking address."
+    }
+  },
   "timeline": {
     "title": "What happens when you tap",
     "tap": "You tap SOS",
-    "wait": "A {{seconds}}-second countdown starts. You can cancel any time.",
-    "callNamed": "Your phone calls {{name}}",
-    "callGeneric": "Your phone calls your first emergency contact"
+    "callNamed": "Choose Call or Send location to {{name}}",
+    "callGeneric": "Choose Call or Send location to your emergency contact"
   },
   "contacts": {
     "title": "Your emergency contacts",
     "manage": "Manage contacts"
   },
-  "none": {
-    "title": "Add an emergency contact first",
-    "loggedOut": "Log in and add someone you trust. SOS will call them from your phone.",
-    "noContacts": "Add someone you trust. SOS will call them from your phone.",
-    "login": "Log in",
-    "signup": "Create account",
-    "add": "Add a contact"
-  }
+  "callContact": "Call {{name}}"
 }
